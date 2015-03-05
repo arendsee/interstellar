@@ -1,0 +1,109 @@
+library(shiny)
+
+# TODO
+# 1) Add in more sophisticated death and fertility tables
+# 2) Add event table (probabilities for mass deaths)
+# 3) Add statistical overview table to each simulation
+
+calculate.deathrate <- function(){
+    c(rep(0, 79), rep(1, 41))
+}
+
+calculate.fertility <- function(){
+    c(rep(0, 19), rep(.5, 20), rep(0, 61)) 
+}
+
+runsim_ <- function(max.pop=30, journey.time=100, ...){
+
+    # person years for a trip
+    py <- journey.time * max.pop
+
+    # 0 for male, 1 for female
+    sex <- matrix(rep(0, py), ncol=max.pop)
+    sex[1, ] <- c(rep(1, ceiling(max.pop / 2)), rep(0, floor(max.pop / 2)))
+
+    # Ages, from 0 to 80
+    age <- matrix(rep(0, py), ncol=max.pop)
+    # age[1, ] <- floor(seq(0, max.age, length.out=max.pop))
+    age[1, ] <- ceiling(runif(max.pop, 0, 79))
+
+    # Binary matrix stating whether individuals are alive (1) or dead (0)
+    alive <- matrix(rep(0, py), ncol=max.pop)
+    alive[1, ] <- rep(1, max.pop)
+
+    # Rolls for life and death
+    roll <- matrix(runif(py), ncol=max.pop)
+
+    # Build death table according to input parameters
+    death.table <- calculate.deathrate(...)
+
+    # Build fertility versus age table
+    fertility.table <- calculate.fertility(...)
+
+    for(i in 2:journey.time){
+        # Copy and increment age
+        age[i, ] <- age[i-1, ] + 1
+        # Calculate survivors
+        alive[i, ] <- alive[i-1, ] & roll[i, ] > death.table[age[i, ]]
+        # Copy sex
+        sex[i, ] <- sex[i-1, ]
+
+        # Maximum possible births
+        max.babies <- sum(sex[i, ] & alive[i, ] & roll[i, ] < fertility.table[age[i, ]])
+        # Available life-slots
+        life.slots <- which(alive[i, ] == 0)
+        if(max.babies && length(life.slots) > 0){
+            b <- min(max.babies, length(life.slots))
+            age[i, life.slots[1:b]] <- 0
+            sex[i, life.slots[1:b]] <- sample(c(1,0), b, replace=TRUE)
+            alive[i, life.slots[1:b]] <- 1
+        }
+    }
+
+    # Return the number of females
+    rowSums(sex & alive)
+}
+
+run.simulation <- function(trials=1, ...){
+    dat  <- c() 
+    for(i in 1:trials){
+        dat <- c(dat, runsim_(...)) 
+    }
+    sim <- data.frame(matrix(dat, ncol=trials))
+    rownames(sim) <- 1:nrow(sim)
+    colnames(sim) <- as.character(1:trials)
+    sim
+}
+
+plot.simulation <- function(...){
+    require(ggplot2)
+    require(reshape2)
+    dat <- run.simulation(...)
+    m <- melt(dat, measure.vars=colnames(dat))
+    colnames(m) <- c('trial', 'nfemales')
+    m$year <- rep(1:nrow(dat), ncol(dat))
+    ggplot(m) +
+        geom_path(
+            aes(
+                x=year,
+                y=nfemales,
+                group=trial,
+                color=trial
+            )
+        ) +
+        theme(legend.position="none")
+}
+
+shinyServer(
+    function(input, output) {
+        k=0
+        output$distPlot <- renderPlot({
+            # Just a hack to make the re-run simulation button work
+            k = k + input$rerun
+            plot.simulation(
+                 trials=input$trials,
+                 max.pop=input$max.pop,
+                 journey.time=input$journey.time
+            )
+        })
+})
