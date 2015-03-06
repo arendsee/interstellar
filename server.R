@@ -6,11 +6,11 @@ library(shiny)
 # 3) Add statistical overview table to each simulation
 
 calculate.deathrate <- function(){
-    c(rep(0, 79), rep(1, 41))
+    c(rep(0, 79), rep(1, 1))
 }
 
-calculate.fertility <- function(){
-    c(rep(0, 19), rep(.5, 20), rep(0, 61)) 
+calculate.fertility <- function(min.rep=20, max.rep=40, fertility=1){
+    c(rep(0, min.rep), rep(fertility, max.rep), rep(0, 100 - min.rep - max.rep)) 
 }
 
 runsim_ <- function(max.pop=30, journey.time=100, ...){

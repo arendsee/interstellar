@@ -3,7 +3,7 @@ library(shiny)
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Interstellar Baby Fest"),
+  titlePanel("Interstellar journey population simulation"),
 
   # Sidebar with a slider input for number of bins
   sidebarLayout(
