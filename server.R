@@ -110,7 +110,9 @@ shinyServer(
                  trials=input$trials,
                  max.pop=input$max.pop,
                  journey.time=input$journey.time,
-                 fertility=input$fertility
+                 fertility=input$fertility,
+                 min.rep=input$fertile.range[1],
+                 max.rep=input$fertile.range[2]
             )
         })
 })
