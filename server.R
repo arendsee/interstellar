@@ -5,12 +5,18 @@ library(shiny)
 # 2) Add event table (probabilities for mass deaths)
 # 3) Add statistical overview table to each simulation
 
+# Assume all people, regardless of sex, are indistinguishable
+# Let X_i equal the probability that you survive year i given you survived to year i
+# Let D = {X_1, ..., X_80}, that is, the yearly deathrate
+# This function sets D
 calculate.deathrate <- function(){
-    c(rep(0, 79), rep(1, 1))
+    c(rep(0, 79), 1)
 }
 
-calculate.fertility <- function(min.rep=20, max.rep=40, fertility=1){
-    c(rep(0, min.rep), rep(fertility, max.rep), rep(0, 100 - min.rep - max.rep)) 
+# This function sets the yearly fertility rate, that is, the probability that a
+# female of a certain age will have a child given there is a slot for one
+calculate.fertility <- function(min.rep=20, max.rep=40, fertility=0.2){
+    c(rep(0, min.rep), rep(fertility, max.rep), rep(0, 81 - min.rep - max.rep)) 
 }
 
 runsim_ <- function(max.pop=30, journey.time=100, ...){
@@ -35,7 +41,7 @@ runsim_ <- function(max.pop=30, journey.time=100, ...){
     roll <- matrix(runif(py), ncol=max.pop)
 
     # Build death table according to input parameters
-    death.table <- calculate.deathrate(...)
+    death.table <- calculate.deathrate()
 
     # Build fertility versus age table
     fertility.table <- calculate.fertility(...)
@@ -103,7 +109,8 @@ shinyServer(
             plot.simulation(
                  trials=input$trials,
                  max.pop=input$max.pop,
-                 journey.time=input$journey.time
+                 journey.time=input$journey.time,
+                 fertility=input$fertility
             )
         })
 })
