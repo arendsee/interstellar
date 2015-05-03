@@ -141,7 +141,7 @@ plot.simulation <- function(...){
         theme(legend.position="none")
 }
 
-run.death.simulations <- function(k=100){
+run.death.simulations <- function(k=100, outfile='simulations.tab'){
   out <- data.frame(
     max.pop=rep(c(5, 10, 15, 20, 25), times=k),
     survival.time=rep(0, 5*k)
@@ -149,6 +149,6 @@ run.death.simulations <- function(k=100){
   for(i in 1:nrow(out)){
     out$survival.time[i] = runsim.till.death_(max.pop=out[i,1], max.age=80) 
   }
-  write.table(out, file='simulation.tab', quote=FALSE, sep="\t", row.names=FALSE)
+  write.table(out, file=outfile, quote=FALSE, sep="\t", row.names=FALSE, append=TRUE)
   return(out)
 }
