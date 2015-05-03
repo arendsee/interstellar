@@ -17,6 +17,50 @@ calculate.fertility <- function(max.age, min.rep=20, max.rep=40, fertility=0.2){
     c(rep(0, min.rep), rep(fertility, max.rep), rep(0, max.age - min.rep - max.rep)) 
 }
 
+get.initial.ages <- function(max.pop, max.age){
+  ceiling(runif(max.pop, 0, max.age - 1))
+}
+
+get.initial.sex <- function(max.pop){
+  c(rep(1, ceiling(max.pop / 2)), rep(0, floor(max.pop / 2)))
+}
+
+# Simulate a survival time for a population
+runsim.till.death_ <- function(max.pop=30, max.age=80, ...){
+
+  age   <- get.initial.ages(max.pop, max.age)
+  sex   <- get.initial.sex(max.pop)
+  alive <- rep(1, max.pop)
+  death.table     <- calculate.deathrate(max.age)
+  fertility.table <- calculate.fertility(max.age, ...)
+
+  year = 0
+  while(TRUE){
+    year = year + 1
+    r <- runif(max.pop)
+
+    # Copy and increment age
+    age <- age + 1
+    # Calculate survivors
+    alive <- alive & r > death.table[age]
+    if(sum(alive) == 0){
+      return(year)
+    }
+
+    # Maximum possible births
+    max.babies <- sum(sex & alive & r < fertility.table[age])
+    # Available life-slots
+    life.slots <- which(alive == 0)
+    if(max.babies && length(life.slots) > 0){
+        b <- min(max.babies, length(life.slots))
+        age[life.slots[1:b]]   <- 0
+        sex[life.slots[1:b]]   <- sample(c(1,0), b, replace=TRUE)
+        alive[life.slots[1:b]] <- 1
+    }
+  }
+}
+
+# Run simulation of female counts across years for a journey of finite length
 runsim_ <- function(max.pop=30, journey.time=100, max.age=80, ...){
 
     # person years for a trip
@@ -24,12 +68,11 @@ runsim_ <- function(max.pop=30, journey.time=100, max.age=80, ...){
 
     # 0 for male, 1 for female
     sex <- matrix(rep(0, py), ncol=max.pop)
-    sex[1, ] <- c(rep(1, ceiling(max.pop / 2)), rep(0, floor(max.pop / 2)))
+    sex[1, ] <- get.initial.sex(max.pop)
 
-    # Ages, from 0 to 80
+    # Ages, from 0 to max.age
     age <- matrix(rep(0, py), ncol=max.pop)
-    # age[1, ] <- floor(seq(0, max.age, length.out=max.pop))
-    age[1, ] <- ceiling(runif(max.pop, 0, max.age - 1))
+    age[1, ] <- get.initial.ages(max.pop, max.age)
 
     # Binary matrix stating whether individuals are alive (1) or dead (0)
     alive <- matrix(rep(0, py), ncol=max.pop)
@@ -96,4 +139,16 @@ plot.simulation <- function(...){
             )
         ) +
         theme(legend.position="none")
+}
+
+run.death.simulations <- function(k=100){
+  out <- data.frame(
+    max.pop=rep(c(5, 10, 15, 20, 25), times=k),
+    survival.time=rep(0, 5*k)
+  )
+  for(i in 1:nrow(out)){
+    out$survival.time[i] = runsim.till.death_(max.pop=out[i,1], max.age=80) 
+  }
+  write.table(out, file='simulation.tab', quote=FALSE, sep="\t", row.names=FALSE)
+  return(out)
 }
