@@ -50,20 +50,23 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 }
 @
 
-<<cache=TRUE>>=
+<<cache=TRUE, echo=FALSE>>=
 # Load simulation data
 pop<-read.table("../simulations/popsim.tab",sep="\t",header=TRUE)
 age<-read.table("../simulations/agesim.tab",sep="\t",header=TRUE)
 fer<-read.table("../simulations/fertilitysim.tab",sep="\t",header=TRUE)
 @
 
-<<cache=TRUE>>=
-p1<-ggplot(pop,aes(x=as.factor(max.pop),y=log(survival.time))) +
-  geom_boxplot()
-p2<-ggplot(age,aes(x=as.factor(max.age),y=log(survival.time))) +
-  geom_boxplot()
-p3<-ggplot(fer,aes(x=as.factor(fertility),y=log(survival.time))) +
-  geom_boxplot()
+<<cache=TRUE, echo=FALSE>>=
+p1 <- ggplot(pop,aes(x=as.factor(max.pop),y=log(survival.time))) +
+  geom_violin(scale='area') +
+  geom_boxplot(alpha=0.1, width=0.2, outlier.size=.1)
+p2 <- ggplot(age,aes(x=as.factor(max.age),y=log(survival.time))) +
+  geom_violin(scale='area') +
+  geom_boxplot(alpha=0.1, width=0.2, outlier.size=.1)
+p3 <- ggplot(fer,aes(x=as.factor(fertility),y=log(survival.time))) +
+  geom_violin(scale='area') +
+  geom_boxplot(alpha=0.1, width=0.2, outlier.size=.1)
 multiplot(p1,p2,p3,cols=2)
 @
 
@@ -72,13 +75,6 @@ There seemed to be a linear relationship between maximum population size $2k$ an
 However, increasing the fertility rate of the females in the population increased the robustness of the population up to a certain point. After 0.2, the log transformed survival time still increases but at a slower rate.
 
 Increasing the max age of the population, decreased the log transformed survival time. This result is consistent since increasing the average age decreases the proportion of fertile females in the total population. This effectively reduces the number of births and deaths before reaching the maximum $2k$ population.
-
-<<cache=TRUE>>=
-p1<-ggplot(pop, aes(x=log(survival.time)))+geom_histogram(binwidth=10/30)+facet_grid(max.pop~.)
-p2<-ggplot(age, aes(x=log(survival.time)))+geom_histogram(binwidth=10/30)+facet_grid(max.age~.)
-p3<-ggplot(fer, aes(x=log(survival.time)))+geom_histogram(binwidth=10/30)+facet_grid(fertility~.)
-multiplot(p1,p2,p3,cols=2)
-@
 
 In order to better understand the distribution of log survival time, we plotted histograms under each of the results. For the most part, the distributions looked like gamma distributions. The gamma function has two parameters ($\alpha$, $\beta$).
 
