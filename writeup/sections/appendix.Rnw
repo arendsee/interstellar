@@ -1,0 +1,106 @@
+\section{Appendix: A more sophisticated Markov model}
+
+The prior model required the population size be constant and birth always
+followed death. Here we will relax this assumption giving all members of the
+population a constant death rate, $d$, and all females a constant fertility
+rate, $b$. Each step in the model corresponds to one year. In this year, each
+female gives birth with probability $b$ and each individual (not counting the
+babies born this year), die with probability $d$. If the population is greater
+or equal to the maximum, no births occur.
+
+Based on this, we can draw the following cases,
+
+%\begin{align*}
+%    Pr((x_t,y_t)\rightarrow(x_{t+1},y_{t+1})) &=  Pr(x_t+\Delta_x,y_t+\Delta_y)\\
+%    Pr(\Delta_x| x_t,y_t)&\\
+%    Pr(\Delta_y| x_t,y_t)&\\
+%    min(births_x)&=max(0,\Delta_x)\\
+%    max(births_x)&=x_t\\
+%    min(births_y)&=max(0,\Delta_y)\\
+%    max(births_y)&=x_t
+%\end{align*}
+
+\begin{equation}
+    Pr\left[ t_{x,y} \rightarrow t_{(x + \Delta_x),(y + \Delta_y)} \right] =
+    \begin{cases}
+        (x = 0 \text{ or } y = 0) \text{ and } \Delta_x=\Delta_y=0, &\quad p_1 \\
+        (x = 0 \text{ or } y = 0) \text{ and not } \Delta_x=\Delta_y=0, &\quad p_2 \\
+        x > 0,\ y> 0 \text{ and } (x + y) < 2k, &\quad p_3 \\
+        (x + y) \ge 2k \text{ and } (\Delta_x > 0 \text{ or } \Delta_y > 0), &\quad p_4 \\
+        (x + y) \ge 2k \text{ and not } (\Delta_x > 0 \text{ or } \Delta_y > 0), &\quad p_5
+    \end{cases}
+\end{equation}
+
+Where $x$ is the number of females, $y$ is the number of males, and $\Delta_x$ and $\Delta_y$
+are integers such that: $(x - \Delta_x) \ge 0$, $(y - \Delta_y) \ge 0$ and $(\Delta_x + \Delta_y) \le x$.
+
+Once the population is entirely devoid of males or females, it is effectively dead, so $p_1=1$.
+
+A dead population cannot resurrect, so $p_2=0$.
+
+A population above the life support capacity cannot reproduce, so $p_4=0$.
+
+I will start with the easire case of $p_5$ is the case wherein the population
+rise to above or equal to the maximum capacity. When this occurs, no new people
+will be born until the population falls back to a suitable level. So the
+population will transition to lower levels randomly. The number of males who
+die in a given year will be binomially distributed. Similarly for the females.
+
+\begin{align}
+    p_5 &= Pr(\Delta_x \text{ females die})Pr(\Delta_y \text{ males die}) \\
+    {} &= {x \choose -\Delta_x} d^{-\Delta_x}(1-d)^{x + \Delta_x} {y \choose -\Delta_y} d^{-\Delta_y}(1-d)^{y + \Delta_y} \\
+    {} &= {x \choose -\Delta_x} {y \choose -\Delta_y} d^{-\Delta_x-\Delta_y}(1-d)^{x + y + \Delta_x + \Delta_y}
+\end{align}
+
+To calculate $p_3$, we must consider every possible path from $(x,y)$ to
+$(x+\Delta_x, y + \Delta_y)$.
+
+Let $B_x=\{i\}_{i=0}^{x}$ be the number of females born
+
+Let $B_y=\{i\}_{i=0}^{x}$ be the number of males born
+
+Let $B_{xy} = \{(B_x=i, B_y=j) \text{ where } (i+j) \le x \}$
+
+The probability of an element in $B_{xy}$ is
+
+\begin{equation}
+Pr(B_{xy} | x,b) =
+            \underbrace{{x \choose i+j} b^{i+j}(1-b)^{x-(i+j)}}_{\text{chance of $i+j$ births}}
+            \underbrace{{i+j \choose i} g^i(1 - g)^j}_{\text{chance of $i$ females}}
+\end{equation}
+
+Similarly we can calculate the probability of a given combination of deaths.
+
+Let $D_x = \{i\}_{i=0}^{x}$ be the number of females that die in a given year
+
+Let $D_y = \{i\}_{i=0}^{y}$ be the number of males that die in a given year
+
+The probability then of event $D_{xy}=\{D_x=i, D_y=j\}$, assuming deaths are independent, is
+
+\begin{equation}
+P\left(D_{xy}; x,y,d\right) =
+    \underbrace{{x \choose i} d^{i}(1-d)^{x - i}}_{\text{$i$ females die}}
+    \underbrace{{y \choose j} d^{j}(1-d)^{y - j}}_{\text{$j$ males die}}
+\end{equation}
+
+All that is left is the construction of the set possible combinations of births
+and deaths that can result in the transition from $(x,y)$ to $(x+\Delta_x, y + \Delta_y)$
+under the conditions of $p_3$. This set will have the general form $S = \{B_x,
+B_y, D_x, D_y | \text{some conditions}\}$. Now to find the transition
+probability, we sum the probabilities of all the paths contained in $S$.
+
+$$ Pr[(x,y)\rightarrow(x+n_x,y+n_y)] = \sum_S Pr(B_{xy} | x,b) Pr\left(D_{xy}; x,y,d\right) $$
+
+The set constructions conditions for $S$ are as follows
+\begin{enumerate}
+    \item $B_x + B_y \le x$
+    \item $B_x \ge \text{max}(0, \Delta_x)$
+    \item $B_y \ge \text{max}(0, \Delta_y)$
+    \item $D_x|B_x = B_x - \Delta_x$
+    \item $D_y|B_y = B_y - \Delta_y$
+    \item $x \ge D_x$
+    \item $y \ge D_y$
+\end{enumerate}
+
+If $S$ is empty for a given transition, that transition probability is 0.
+
