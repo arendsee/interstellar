@@ -74,10 +74,10 @@ p2 <- ggplot(age,aes(x=as.factor(max.age),y=survival.time)) +
   ylab('Survival Time') +
   scale_y_continuous(trans='log2', breaks=trans_breaks('log2', function(x) round(2^x)))
 
-p3 <- ggplot(fer,aes(x=as.factor(fertility),y=survival.time)) +
+p3 <- ggplot(fer,aes(x=as.factor(100 * fertility),y=survival.time)) +
   geom_violin(scale='area') +
   geom_boxplot(alpha=0.1, width=0.2, outlier.size=.1) +
-  xlab('Fertility') +
+  xlab('Fertility (%)') +
   ylab('Survival Time') +
   scale_y_continuous(trans='log2', breaks=trans_breaks('log2', function(x) round(2^x)))
 multiplot(p1,p2,p3,cols=2)
