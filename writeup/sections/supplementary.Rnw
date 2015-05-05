@@ -1,0 +1,6 @@
+\section{Supplementary Materials}
+
+We made a Shiny app in R which can be accessed at this url:
+\url{https://arendsee.shinyapps.io/interstellar/}. All our code and simulated
+datasets (including the \LaTeX  code for this document) is available on github
+at \url{https://github.com/zbwrnz/interstellar}.
