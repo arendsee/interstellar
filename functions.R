@@ -14,7 +14,7 @@ calculate.deathrate <- function(max.age){
 # This function sets the yearly fertility rate, that is, the probability that a
 # female of a certain age will have a child given there is a slot for one
 calculate.fertility <- function(max.age, min.rep=20, max.rep=40, fertility=0.2){
-    c(rep(0, min.rep), rep(fertility, max.rep), rep(0, max.age - min.rep - max.rep)) 
+    c(rep(0, min.rep), rep(fertility, max.rep - min.rep), rep(0, max.age - max.rep)) 
 }
 
 get.initial.ages <- function(max.pop, max.age){
@@ -150,5 +150,17 @@ run.death.simulations <- function(k=100, p=c(4, 8, 12, 16, 20, 24, 28)){
     mp <- out[i,1]
     years <- runsim.till.death_(max.pop=mp, max.age=80) 
     write(paste0(mp, "\t", years), stdout())
+  }
+}
+
+run.age.simulations <- function(k=10, max.pop=20, ages=c(50, 60, 70, 80, 90, 100)){
+  out <- data.frame(
+    max.age=rep(ages, times=k),
+    survival.time=rep(0, length(ages)*k)
+  )
+  for(i in 1:nrow(out)){
+    ma <- out[i,1]
+    years <- runsim.till.death_(max.pop=max.pop, max.age=ma) 
+    write(paste0(ma, "\t", years), stdout())
   }
 }
