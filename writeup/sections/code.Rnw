@@ -1,0 +1,4 @@
+\section{Code}
+<<, ref.label='markov', ,eval=FALSE>>=
+@
+

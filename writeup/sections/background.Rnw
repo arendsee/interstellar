@@ -1,0 +1,15 @@
+\section{Background}
+
+A video by Dr Harry Jones \footnote{Jones, H. (2015, May, 3). Starship Life
+Support. Retrieved from \url{https://youtu.be/FK_GSp0AHFk}} discussed the
+resources and costs of sending a manned spaceship to another star system. The
+journey requires a minimum of several generations. The capacity of the
+lifesupport places an absolute limit on population size. The mass of the
+payload, and thus the cost of the mission, is dependent on the population size.
+A very small population would have a high chance of dying off by chance (for
+example, if there are only two women, and they both happen to be infertile, the
+mission fails). A very high population is prohibitively expensive. The purpose
+of our project is to estimate how long a population of given maximum size will
+survive.
+
+We will first construct an extremely unrealistic (but mathematically simple) Markov model.
