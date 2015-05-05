@@ -1,1 +1,8 @@
 \section{Results}
+
+<<fig.width=5,fig.height=4>>=
+age<-read.table("../simulations/agesim.tab",sep="\t",header=TRUE)
+qplot(as.factor(max.age),log(survival.time),data=age,geom="boxplot")
+#qplot(log(survival.time),data=age,binwidth=10/30)+facet_wrap(max.age.~)
+@
+
