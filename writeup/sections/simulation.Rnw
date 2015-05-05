@@ -1,1 +1,68 @@
 \section{Simulation}
+
+While the Markov model above yields interesting results, its assumptions are
+damningly simplistic. Relaxing these assumptions in a Markov chain context is
+possible (see Appendix), but is complicated. Here we will simulate small
+populations under varying conditions.
+
+Each iteration of a simulation represents one year of the interstellar journey.
+During this year each person dies with an age-dependent probability.
+Additionally, each surviving woman gives birth with an age-dependent
+probability. Each child has a 50\% chance of being male and a 50\% chance of
+being female. If the number of children born exceeds the maximum allowable
+population size, the excess babies are tossed out the airlock. 
+
+\subsection{Parameters}
+The simulation takes the following parameters: 
+
+\begin{enumerate}
+    \item Maximum population size, $N$
+    \item Maximum possible age, $A$
+    \item Death probability given age, $\boldsymbol{D} = \{D_i\}_{i=1}^A$
+    \item Birth probability given age, $\boldsymbol{F} = \{F_i\}_{i=1}^A$
+\end{enumerate}
+
+The probability of dying at a given age we assume to be
+
+\begin{equation}
+    D_i =
+        \begin{cases}
+            i < A, &\quad 0 \\
+            i = A, &\quad 1
+        \end{cases}
+\end{equation}
+
+So everyone dies when they reach the age $A$. This does not accurately reflect
+real population dynamics, where death rate tends to increase linearly with
+time.
+
+For fertility we assume
+
+\begin{equation}
+    F_i =
+        \begin{cases}
+            i < 20, &\quad 0 \\
+            20 \le i < 40, &\quad f \\
+            40 \le i, &\quad 0
+        \end{cases}
+\end{equation}
+
+Where $f$ is a constant between 0 and 1. So the expected number of children
+produced by a woman will be $20 \times f$.
+
+Our code is general enough to easily accommodate more sophisticated death
+and fertility vectors, but we think that would only complicate interpretation
+without fundamentally changing the conclusions.
+
+\subsection{Initial conditions}
+
+Initially there are an equal number of males and females with ages uniformly
+distributed between 1 and $A$ and total number equal to $N$.
+
+\subsection{Running the simulation}
+
+The variable of interest is the population survival time, $T = \{i\}_{i=1}^{\infty}$.
+
+Of interest is the distribution of $T$ as a function of $f$ (fertility), $A$
+(maximum age), and $N$ (maximum population size).
+
