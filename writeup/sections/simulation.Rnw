@@ -20,6 +20,8 @@ The simulation takes the following parameters:
     \item Maximum possible age, $A$
     \item Death probability given age, $\boldsymbol{D} = \{D_i\}_{i=1}^A$
     \item Birth probability given age, $\boldsymbol{F} = \{F_i\}_{i=1}^A$
+    \item Women don't need men to make babies (they have a sperm bank). This
+    assumption avoids the complexities of mate choice and inbreeding.
 \end{enumerate}
 
 The probability of dying at a given age we assume to be
