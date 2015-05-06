@@ -38,7 +38,7 @@ In a given step, the number of females may increase, stay the same, or decrease
 
 %Where $X$ is the number of females and $g=(1/2)$ is the probability of a female child. 
 Where $n_f$ is the number of females and $g=(1/2)$ is the probability of a female child. 
-\newpage
+
 This yields the following transition matrix:
 
 \begin{equation}
