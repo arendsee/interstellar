@@ -130,4 +130,64 @@ years&=t/d && \text{converting number of births and deaths to number of years}\\
 \hat{\mu}_{T,2k}&=\sum (years)*[Pr(X==0)+Pr(X==2k)]
 \end{align*}
 
-hello
+\subsection*{Fundamental matrix and expected surviving year}
+In out model the transition matrix has two obsorbing states. Then it can be put into the following canonical form:
+\begin{align*}
+M = \begin{pmatrix}
+Q & R\\ 
+O & I_2
+\end{pmatrix}
+\end{align*}
+
+where Q is a $2k-1$ by $2k-1$ matrix, $R$ is a nonzero 2 by $2k-1$ zero matrix and $I_2$ is the 2 by 2 identity matrix. In this form, matrix $Q$ describes the probability of transitioning from one state to another. $R$ describes the probability of transitioning from one state to absorbing states.  
+The fundamental matrix, here denoted by F, can be calculated by:
+\begin{align*}
+F=\sum_{t=0}^\infty Q^t=(I_{2k-1}-Q)^{-1}
+\end{align*}
+
+
+where $I_{2k-1}$ is the identity matrix. the entry of the fundamental matrix $F$ is the expected number of times the Markov chain is in stat $j$, given that the chain started in state $i$.  In this case the expected number of steps before being absorbed when starting in transient state I is the ith entry of the vector:
+\begin{align*}
+S=F1
+\end{align*}
+where $1$ is a length 2k-1 column vector whose entries are all one.
+For example when $k=5$ in our model, we have the transition matrix:
+
+\includegraphics[width=\linewidth]{sections/transition.png}
+
+The matrix Q is:
+
+\includegraphics[width=\linewidth]{sections/Q.png}
+
+Then we get the fundamental matrix:
+
+\includegraphics[width=\linewidth]{sections/fundamental.png}
+
+The expected step number is $1168$ and then we can calculate the expected surviving year is $9349$.
+
+We calculated the expected survive year by using different $k$ values (2~15) :
+<<eval=FALSE>>=
+result=zeros(15,1);
+for k=2:15
+    off_diag = 0.5 - 1/(4*k) * (1:2*k-1);
+    upper_diag = [0 0 off_diag]';
+    lower_diag = flipud(upper_diag);
+    diagonal = [1 0.5*ones(1,2*k-1) 1]';
+    M=spdiags([lower_diag diagonal upper_diag], [-1 0 1], 2*k+1, 2*k+1);
+    M=full(M);
+    Q=M(2:2*k,2:2*k);
+    unit = ones(size(Q,1),1);
+    I=eye(size(Q,1));
+    F=pinv(I-Q);
+    expected = F*unit;
+    result(k-1)=expected(k)/(2*k)*80;
+end
+dlmwrite('expected.csv',result, 'delimiter',',', 'precision','%f');
+@
+
+<<fig.height=4>>=
+data<-read.table("expected.tab",header=TRUE,sep=" ")
+head(data)
+qplot(females,log2(expectedyear),data=data)
+@
+
