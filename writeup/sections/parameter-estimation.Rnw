@@ -8,6 +8,9 @@
 % distribution. This is easily rearranged to yield $\alpha =
 % \frac{\mu^2}{\sigma^2}$ and $\frac{\beta = \mu}{\sigma^2}$. Of course we do not
 % know the true $\mu$ and $\sigma$.
+
+In this section we discuss the distribution of survival times with varying
+population maxima and derive a general equation.
  
 \begin{figure}[!hbpt]
 <<echo=FALSE, fig.height=6, fig.width=6, message=FALSE, warning=FALSE>>=
@@ -29,9 +32,11 @@ data with varying maximum population thesholds ($N$), $f=0.2$ and $A=80$.}
 
 \end{figure}
 
-Survival times do appear to be neatly log-normal distributed. The means and
+Survival times appear to be neatly log-normal distributed. The means and
 standard deviations of this log-normal distribution seem to increase linearly
-with maximum population size. So we can model the distribution of the log transformed population surival time using a linear model of the maximum poplation size.
+with maximum population size. So we can model the distribution of the log
+transformed population surival time using a linear model to predict the mean
+and standard deviations.
 
 \begin{align}
     \log(T_i) &\sim Norm(\mu_i, \sigma_i) \\
@@ -71,7 +76,7 @@ s24.star <- beta2 + beta3 * 24
 s40.star <- beta2 + beta3 * 40
 @
 
-This yields the following $\beta$ values
+The following $\beta$ values can be calculated from the simulation means and standard deviations (see Code section)
 
 \begin{align*}
     \hat{\beta_0} &= \Sexpr{signif(beta0, 3)} \\
@@ -87,7 +92,8 @@ This yields the following $\beta$ values
     $N=24$ & \Sexpr{signif(m24.star, 3)} & \Sexpr{signif(s24.star, 3)} & \Sexpr{signif(m24, 3)} & \Sexpr{signif(s24, 3)} \\
     $N=40$ & \Sexpr{signif(m40.star, 3)} & \Sexpr{signif(s40.star, 3)} & \Sexpr{signif(m40, 3)} & \Sexpr{signif(s40, 3)}
 \end{tabular}
-\caption{Predicted versus empirical estimates of the mean and standard deviation of two simulations}
+\caption{Predicted versus actual estimates of the mean and standard deviation
+of two simulations.}
 \end{table}
 
 \begin{figure}[!hbpt]
@@ -105,13 +111,15 @@ curve(dnorm(x, mean=m40, sd=s40), min=min(dat), max=max(dat), add=TRUE, col="blu
 curve(dnorm(x, mean=m40.star, sd=s40.star), min=min(dat), max=max(dat), add=TRUE, col="red")
 @
 \caption{Predicted distribution (red) versus empirical distribution (blue)
-distributions.}
+distributions. This result indicates that we can reliably interpolate
+distributions of survival time with our generalization of the simulation
+results}
 \end{figure}
 
 In planning a mission the expected survival time is not of great interest.
 Rather the designers need to know how large a crew must be supported in order
-to have a sufficient probability of survival. To that end we will compare the
-2.5 percentiles from the actual data, to the predicted percentiles.
+to have a sufficient probability of survival. To that end we will plot the the
+2.5 percentiles for survival time.
 
 \begin{figure}
 <<, echo=FALSE, fig.width=8, fig.height=5>>=
