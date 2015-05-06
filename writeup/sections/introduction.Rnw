@@ -11,16 +11,19 @@ The mass of the payload, and thus the cost of the mission, is dependent on the
 size of the crew. A very small population would have a high chance of dying off
 by chance (for example, if there are only two women, and they both happen to be
 infertile, the mission fails). A very high population is prohibitively
-expensive. The purpose of our project is to estimate how long a population of
-given maximum size will survive.
+expensive. The purpose of our project is to estimate the crewsize necessary for
+a mission to have a decent chance of success.
 
 We will first construct an extremely unrealistic (but mathematically simple)
 Markov model. Then we will run a more realistic simulation. From the simulated
 data we will predict the distribution of survival times for different crew
 sizes. Then we will develop a general equation to predict the distribution of
 survival times for an arbitrary maximum population size. We will also determine
-the effect of lifespan and fertility on population survival times.
+the effect of variation in lifespan and fertility on population survival times.
 
-Using these results we can estimate how large a crew size is needed to have a
-high probability of surviving the journey and what population control
-strategies will increase the odds.
+Dr. Jones suggests a population of 30-60 is all that is needed for a
+multi-century journey. But this choice was based only on a rough guess of the
+skills needed to survive. We will build upon this by estimating the minimum
+life support capacity required to avoid stochastic failure before arrival.
+Also, our insight into the effects of variation in lifespan and fertility, will
+inform decisions on strategies for maximizing success.
