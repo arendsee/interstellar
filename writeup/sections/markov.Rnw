@@ -86,7 +86,7 @@ This yields the following transition matrix:
 A population evolving according to this matrix is certain to eventually fall
 into one of the two absorbing states, when $n_f=0$ or $n_f=2k$.
 
-<<markov,fig.height=4, echo=FALSE, message=FALSE>>=
+<<markov,fig.height=3.5, echo=FALSE, message=FALSE>>=
 library(markovchain)
 library(ggplot2)
 
@@ -131,7 +131,7 @@ years&=t/d && \text{converting number of births and deaths to number of years}\\
 \end{align*}
 
 \subsection*{Fundamental matrix and expected surviving time}
-In out model the transition matrix has two obsorbing states. Then it can be put into the following canonical form:
+In out model the transition matrix has two absorbing states. Then it can be put into the following canonical form:
 \begin{align*}
 M = \begin{pmatrix}
 Q & R\\ 
@@ -185,9 +185,8 @@ end
 dlmwrite('expected.csv',result, 'delimiter',',', 'precision','%f');
 @
 
-<<fig.height=4>>=
+<<fig.height=4,echo=FALSE>>=
 data<-read.table("expected.tab",header=TRUE,sep=" ")
-head(data)
 qplot(females,log2(expectedyear),data=data)
 @
 
