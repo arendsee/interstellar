@@ -9,7 +9,7 @@
 \pagestyle{fancy}
 \fancyfoot{}
 \lhead{STAT447 (Spring 2015) Final Project}
-\rhead{Jennifer Chang, Kejue Jia, Zebulun Arendsee \thepage}
+\rhead{Jennifer Chang, Kejue Jia, Zebulun Arendsee \space\space \thepage}
 
 \begin{document}
 

@@ -1,4 +1,232 @@
 \section{Code}
+<<f>>=
+# ================
+# Markov functions
+# ================
+@
+
 <<, ref.label='markov', ,eval=FALSE>>=
 @
 
+<<e, cache=FALSE>>=
+# =================
+# General functions
+# =================
+
+# Purpose: Sets age-based death probabilities 
+# Assume all people, regardless of sex, are indistinguishable
+# Let X_i equal the probability that you die on year i given you survived to year i
+# Let D = {X_1, ..., X_80}, that is, the yearly deathrate
+calculate.deathrate <- function(max.age){
+  # Everyone dies when they reach max.age, never before
+  c(rep(0, max.age-1), 1)
+}
+
+# Purpose: Sets the yearly fertility rate, that is, the probability that a
+# female of a certain age will have a child given there is a slot for one
+calculate.fertility <- function(max.age, min.rep=20, max.rep=40, fertility=0.2){
+  # if age < min.rep, Pr(birth) = 0
+  # if min.rep <= age <= max.rep, Pr(birth) = fertility
+  # if age > max.rep, Pr(birth) = 0
+  c(rep(0, min.rep), rep(fertility, max.rep - min.rep), rep(0, max.age - max.rep)) 
+}
+
+get.initial.ages <- function(max.pop, max.age){
+  ceiling(runif(max.pop, 0, max.age - 1))
+}
+
+get.initial.sex <- function(max.pop){
+  c(rep(1, ceiling(max.pop / 2)), rep(0, floor(max.pop / 2)))
+}
+
+
+
+# ===========================
+# Code used for the Shiny App
+# ===========================
+
+# Run simulation of female counts across years for a journey of given length
+# Returns: number of females alive on each year of the journey
+runsim_ <- function(max.pop=30, journey.time=100, max.age=80, ...){
+
+    # person years for a trip
+    py <- journey.time * max.pop
+
+    # 0 for male, 1 for female
+    sex <- matrix(rep(0, py), ncol=max.pop)
+    sex[1, ] <- get.initial.sex(max.pop)
+
+    # Ages, from 0 to max.age
+    age <- matrix(rep(0, py), ncol=max.pop)
+    age[1, ] <- get.initial.ages(max.pop, max.age)
+
+    # Binary matrix stating whether individuals are alive (1) or dead (0)
+    alive <- matrix(rep(0, py), ncol=max.pop)
+    alive[1, ] <- rep(1, max.pop)
+
+    # Rolls for life and death
+    roll <- matrix(runif(py), ncol=max.pop)
+
+    # Build death table according to input parameters
+    death.table <- calculate.deathrate(max.age)
+
+    # Build fertility versus age table
+    fertility.table <- calculate.fertility(max.age, ...)
+
+    for(i in 2:journey.time){
+        # Copy and increment age
+        age[i, ] <- age[i-1, ] + 1
+        # Calculate survivors
+        alive[i, ] <- alive[i-1, ] & roll[i, ] > death.table[age[i, ]]
+        # Copy sex
+        sex[i, ] <- sex[i-1, ]
+
+        # Maximum possible births
+        max.babies <- sum(sex[i, ] & alive[i, ] & roll[i, ] < fertility.table[age[i, ]])
+        # Available life-slots
+        life.slots <- which(alive[i, ] == 0)
+        if(max.babies && length(life.slots) > 0){
+            b <- min(max.babies, length(life.slots))
+            age[i, life.slots[1:b]] <- 0
+            sex[i, life.slots[1:b]] <- sample(c(1,0), b, replace=TRUE)
+            alive[i, life.slots[1:b]] <- 1
+        }
+    }
+
+    # Return the number of females
+    rowSums(sex & alive)
+}
+
+run.simulation <- function(trials=1, ...){
+    dat  <- c() 
+    for(i in 1:trials){
+        dat <- c(dat, runsim_(...)) 
+    }
+    sim <- data.frame(matrix(dat, ncol=trials))
+    rownames(sim) <- 1:nrow(sim)
+    colnames(sim) <- as.character(1:trials)
+    sim
+}
+
+plot.simulation <- function(...){
+    require(ggplot2)
+    require(reshape2)
+    dat <- run.simulation(...)
+    m <- melt(dat, measure.vars=colnames(dat))
+    colnames(m) <- c('trial', 'nfemales')
+    m$year <- rep(1:nrow(dat), ncol(dat))
+    ggplot(m) +
+        geom_path(
+            aes(
+                x=year,
+                y=nfemales,
+                group=trial,
+                color=trial
+            )
+        ) +
+        theme(legend.position="none")
+}
+
+
+
+# ================================
+# Code used for general simulation
+# ================================
+
+# Simulate a survival time for a population
+runsim.till.death_ <- function(max.pop=30, max.age=80, ...){
+
+  age   <- get.initial.ages(max.pop, max.age)
+  sex   <- get.initial.sex(max.pop)
+  alive <- rep(1, max.pop)
+  death.table     <- calculate.deathrate(max.age)
+  fertility.table <- calculate.fertility(max.age, ...)
+
+  year = 0
+  while(TRUE){
+    year = year + 1
+    r <- runif(max.pop)
+
+    # Copy and increment age
+    age <- age + 1
+    # Calculate survivors
+    alive <- alive & r > death.table[age]
+    if(sum(alive) == 0){
+      return(year)
+    }
+
+    # Maximum possible births
+    max.babies <- sum(sex & alive & r < fertility.table[age])
+    # Available life-slots
+    life.slots <- which(alive == 0)
+    if(max.babies && length(life.slots) > 0){
+        b <- min(max.babies, length(life.slots))
+        age[life.slots[1:b]]   <- 0
+        sex[life.slots[1:b]]   <- sample(c(1,0), b, replace=TRUE)
+        alive[life.slots[1:b]] <- 1
+    }
+  }
+}
+
+# Wrapper for runsim.till.death_
+run.death.simulations <- function(d){
+  write(paste(colnames(d), collapse="\t"), stdout())
+  for(i in 1:nrow(d)){
+    d[i, 'survival.time'] <- runsim.till.death_(max.pop=d[i, 'max.pop'],
+                                                max.age=d[i, 'max.age'],
+                                                min.rep=d[i, 'min.rep'],
+                                                max.rep=d[i, 'max.rep'],
+                                                fertility=d[i, 'fertility']) 
+    write(paste(d[i,], collapse="\t"), stdout())
+  }
+}
+
+
+# Simulate with varying maximum population
+pop.sim <- function(k=100, p=c(4, 8, 12, 16, 20, 24, 28, 32)){
+  n=k * length(p)
+  run.death.simulations(
+    data.frame(
+      max.pop=rep(p, times=k),
+      max.age=rep(80, n),
+      min.rep=rep(20, n),
+      max.rep=rep(40, n),
+      fertility=rep(0.2, n), 
+      survival.time=rep(0, n)
+    )
+  )
+}
+
+# Simulate with varying fertility
+fertility.sim <- function(k=100, f=c(0.1, 0.125, 0.15, 0.175, .2, 0.225, 0.250, 0.275, 0.3)){
+  n=k * length(f)
+  run.death.simulations(
+    data.frame(
+      max.pop=rep(20, n),
+      max.age=rep(80, n),
+      min.rep=rep(20, n),
+      max.rep=rep(40, n),
+      fertility=rep(f, times=k), 
+      survival.time=rep(0, n)
+    )
+  )
+}
+
+# Simulate with varying age
+age.sim <- function(k=100, ages=c(50, 60, 70, 80, 90, 100)){
+  n=k * length(ages)
+  run.death.simulations(
+    data.frame(
+      max.pop=rep(20, n),
+      max.age=rep(ages, times=k),
+      min.rep=rep(20, n),
+      max.rep=rep(40, n),
+      fertility=rep(0.2, n), 
+      survival.time=rep(0, n)
+    )
+  )
+}
+@
+
+<<, ref.label='pred_vs_emp', eval=FALSE>>=
+@

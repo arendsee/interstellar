@@ -48,7 +48,11 @@ Here we will predict $\beta$ values using 8 of the 10 simulations (removing
 $N=24$ and $N=40$) and then compare the predicted distribution to the empirical
 ones.
 
-<<fit, echo=FALSE>>=
+<<pred_vs_emp, echo=FALSE>>=
+# ===================================================
+# Comparison of predicted and empirical distributions
+# ===================================================
+
 d <- s.pop[c(-6, -10), ]
 fit.mean <- lm(d$mean ~ d$max.pop)
 fit.sd <- lm(d$sd ~ d$max.pop)
@@ -56,10 +60,12 @@ beta0 <- coef(fit.mean)[1]
 beta1 <- coef(fit.mean)[2]
 beta2 <- coef(fit.sd)[1]
 beta3 <- coef(fit.sd)[2]
+# Empirical
 m24 <- subset(s.pop, max.pop == 24)$mean
 m40 <- subset(s.pop, max.pop == 40)$mean
 s24 <- subset(s.pop, max.pop == 24)$sd
 s40 <- subset(s.pop, max.pop == 40)$sd
+# Predicted
 m24.star <- beta0 + beta1 * 24
 m40.star <- beta0 + beta1 * 40
 s24.star <- beta2 + beta3 * 24
