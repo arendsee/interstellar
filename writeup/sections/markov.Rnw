@@ -3,7 +3,6 @@
 Suppose the initial crew consists of $k$ males and $k$ females. The lifesupport
 limits the total crew size to $2k$. We will make the following assumptions
 
-\noindent
 A1: Each individual is fully described by their sex
 
 A2: Each individual, regardless of age and sex, has a probability $d$ of dying
@@ -35,7 +34,7 @@ respectively, and are solved for below
     p_{-1} &= \left( \frac{n_f}{2k} \right) \frac{1}{2}  \tag{Female dies, male is born}
 \end{align*}
 
-Where $n_f$ is the number of females and $g=(1/2)$ is the probability of a female child. 
+Where $n_f$ is the number of females. 
 
 This yields the following transition matrix:
 
@@ -90,43 +89,61 @@ into one of the two absorbing states, when $n_f=0$ or $n_f=2k$. An example trans
 <<markov,fig.height=3.5, echo=FALSE, message=FALSE>>=
 library(markovchain)
 library(ggplot2)
+run.markov <- function(k=5){
+    # Build the Markov Model
+    trans<-matrix(data=rep(0,(2*k+1)*(2*k+1)), byrow=TRUE, nrow=2*k+1)
+    trans[1,1]=1
+    trans[2*k+1,2*k+1]=1
+    i=0
+    for(i in 2:(2*k)){
+      trans[i,i]=1/2
+      trans[i,i-1]=(i-1)/(4*k)
+      trans[i,i+1]=(2*k-(i-1))/(4*k)
+    }
+    mcModel<-new("markovchain",byrow=TRUE,transitionMatrix=trans,name="Intersteller",
+                 states=c(as.character(0:(2*k))))
+    mcModel
 
-k=5
+    # Run multiple time steps
+    init<-rep(0,(2*k+1))
+    init[k+1]=1;  # k number of females
 
-# Build the Markov Model
-trans<-matrix(data=rep(0,(2*k+1)*(2*k+1)), byrow=TRUE, nrow=2*k+1)
-trans[1,1]=1
-trans[2*k+1,2*k+1]=1
-i=0
-for(i in 2:(2*k)){
-  trans[i,i]=1/2
-  trans[i,i-1]=(i-1)/(4*k)
-  trans[i,i+1]=(2*k-(i-1))/(4*k)
-}
-mcModel<-new("markovchain",byrow=TRUE,transitionMatrix=trans,name="Intersteller",
-             states=c(as.character(0:(2*k))))
-mcModel
-
-# Run multiple time steps
-init<-rep(0,(2*k+1))
-init[k+1]=1;  # k number of females
-
-for(i in 0:9){
- t=10^i # number of time steps
- out<-init*(mcModel^t)
- if(i==0){
-   dd<-data.frame(y=c(out),x=c(0:(2*k)),t=toString(t))
- }else{
-   dd<-rbind(dd,data.frame(y=c(out),x=c(0:(2*k)),t=toString(t)))
- }
+    for(i in 0:9){
+     t=10^i # number of time steps
+     out<-init*(mcModel^t)
+     if(i==0){
+       dd<-data.frame(y=c(out),x=c(0:(2*k)),t=toString(t))
+     }else{
+       dd<-rbind(dd,data.frame(y=c(out),x=c(0:(2*k)),t=toString(t)))
+     }
+    }
+    return(dd)
 }
 @
+
+<<run_models, echo=FALSE>>=
+
+@
+
 \begin{figure}[H]
 <<fig.height=3.5, echo=FALSE, message=FALSE>>=
+dd <- run.markov(k=5)
 qplot(x,y,data=dd,colour=t,xlab="Number of females (X)",
       ylab="Pr(X==x) after t deaths and births")+geom_line()
 @
-\caption{Percentage of populations with $x$ number of Females at death/birth step $t$.}
+\caption{Percentage of populations with $x$ number of Females at death/birth step $t$ where the crew size is 10.}
+\end{figure}
+
+\begin{figure}[H]
+<<fig.height=3.5, echo=FALSE, message=FALSE>>=
+dd <- run.markov(k=15)
+ggplot(dd) +
+    geom_path(aes(x=x, y=y, group=t, color=t)) +
+    xlab("Number of females (X)") +
+    ylab("Pr(X==x) after t deaths and births") +
+    ggtitle('N=30')
+@
+\caption{Percentage of populations with $x$ number of Females at death/birth step $t$ where the crew size is 30.}
 \end{figure}
 
 The number of deaths or births $t$ can be converted to years by using a uniform death rate. Population size is $2k$ and we assume a uniform distribution over a maximum lifespan of 80. Therefore, every year we expect $d$ number of deaths. Using this rate $d$, we can estimate number of years until the population becomes female-deficient or female-saturated and the mission fails.
@@ -204,3 +221,8 @@ qplot(females,log2(expectedyear),data=data)
 \caption{log transformed expected survival time versus number of females in the starting population}
 \end{figure}
 
+The times predicted by the Markov models are extreme upper limits. The model
+assumes that regardless of the number of females actually present, they can
+always produce a child on demand. Basically, infinite fertility. Of course this
+is unrealistic. This model might be accurate for marbles in urns, but not for
+people.
