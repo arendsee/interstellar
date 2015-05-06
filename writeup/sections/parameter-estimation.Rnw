@@ -1,0 +1,26 @@
+\section{Parameter estimation}
+
+% If we assume survival time is roughly gamma distributed, as it appears in the
+% plots, we can estimate the shape paramaters $\alpha$ and the rate parameter
+% $\beta$ from the data.
+% 
+% We know $\mu = \alpha / \beta$ and $\sigma^2 = \alpha / \beta^2$ for a gamma
+% distribution. This is easily rearranged to yield $\alpha =
+% \frac{\mu^2}{\sigma^2}$ and $\frac{\beta = \mu}{\sigma^2}$. Of course we do not
+% know the true $\mu$ and $\sigma$.
+ 
+<<echo=FALSE, fig.height=6, fig.width=6, message=FALSE, warning=FALSE>>=
+require(plyr)
+s.pop <- ddply(pop, 'max.pop', summarise, mean=mean(log(survival.time)), sd=sd(log(survival.time)))
+# s.pop$alpha = s.pop$mean^2 / s.pop$sd^2
+# s.pop$beta = s.pop$mean / s.pop$sd^2
+par(mfrow=c(3,3), mar=c(3,2,3,1))
+for(i in 2:10){
+    dat <- log(subset(pop, max.pop == s.pop$max.pop[i]))$survival.time 
+    hist(dat, freq=FALSE, main=paste0('N=', s.pop[i, 1]), xlab='', ylab='')
+    # curve(dgamma(x, shape=s.pop[i, 'alpha'], rate=s.pop[i, 'beta']), min=min(dat), max=max(dat), add=TRUE, col="red")
+    curve(dnorm(x, mean=s.pop[i, 'mean'], sd=s.pop[i, 'sd']), min=min(dat), max=max(dat), add=TRUE, col="blue")
+}
+@
+
+
