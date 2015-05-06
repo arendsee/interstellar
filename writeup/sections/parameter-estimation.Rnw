@@ -1,4 +1,4 @@
-\section{Parameter estimation}
+\subsection{Parameter estimation}
 
 % If we assume survival time is roughly gamma distributed, as it appears in the
 % plots, we can estimate the shape paramaters $\alpha$ and the rate parameter
@@ -90,7 +90,7 @@ This yields the following $\beta$ values
 \caption{Predicted versus empirical estimates of the mean and standard deviation of two simulations}
 \end{table}
 
-\begin{figure}
+\begin{figure}[!hbpt]
 <<echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=3>>=
 par(mfrow=c(1,2), mar=c(3,2,3,1))
 
@@ -108,3 +108,41 @@ curve(dnorm(x, mean=m40.star, sd=s40.star), min=min(dat), max=max(dat), add=TRUE
 distributions.}
 \end{figure}
 
+In planning a mission the expected survival time is not of great interest.
+Rather the designers need to know how large a crew must be supported in order
+to have a sufficient probability of survival. To that end we will compare the
+2.5 percentiles from the actual data, to the predicted percentiles.
+
+\begin{figure}
+<<, echo=FALSE, fig.width=4, fig.height=4>>=
+    k=50
+    N.pred <- 1:k
+    mu.pred <- beta0 + beta1 * N.pred
+    sigma.pred <- beta2 + beta3 * N.pred
+    q.pred <- rep(0, k)
+    for(i in 1:k){
+        q.pred[i] <- qnorm(0.025, mean=mu.pred[i], sd=sigma.pred[i])
+    }
+    ggplot(data.frame(
+            Group=c(rep('predicted', k), rep('simulated', nrow(goforth))),
+            pop=c(N.pred, goforth$max.pop),
+            q=c(exp(q.pred), exp(goforth$q1)))) +
+        geom_point(
+            aes(
+                x=pop,
+                y=q,
+                color=Group
+            )
+        ) +
+        xlab('Crew size') +
+        ylab('Journey length') +
+        ggtitle('Recommended minimum crew sizes')
+
+@
+
+\caption{The crew sizes required to have a 97.5\% success rate. The
+``simulated'' values correspond to the 2.5 percentiles of the simulated data.
+The ``predicted'' values are the 2.5 percentiles of the normal distribution
+with parameters estimated from simulations.}
+
+\end{figure}
