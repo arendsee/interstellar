@@ -158,9 +158,9 @@ F=\sum_{t=0}^\infty Q^t=(I_{2k-1}-Q)^{-1}
 
 where $I_{2k-1}$ is the identity matrix. the entry of the fundamental matrix $F$ is the expected number of times the Markov chain is in stat $j$, given that the chain started in state $i$.  In this case the expected number of steps before being absorbed when starting in transient state $I$ is the ith entry of the vector:
 \begin{align*}
-S=F1
+S=F\mathbf{1}
 \end{align*}
-where $1$ is a length $2k-1$ column vector whose entries are all one.
+where $\mathbf{1}$ is a length $2k-1$ column vector whose entries are all one.
 For example when $k=5$ in our model, we have the transition matrix:
 
 \includegraphics[width=\linewidth]{sections/transition.png}
