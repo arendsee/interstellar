@@ -68,3 +68,4 @@ The variable of interest is the population survival time, $T = \{i\}_{i=1}^{\inf
 Of interest is the distribution of $T$ as a function of $f$ (fertility), $A$
 (maximum age), and $N$ (maximum population size).
 
+The simulation ends when everyone is dead.
