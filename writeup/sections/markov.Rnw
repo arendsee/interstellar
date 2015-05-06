@@ -1,6 +1,6 @@
 \subsection{Markov model}
 
-Suppose the initial crew consists of $k$ males and $k$ females. The lifesupport
+Suppose the initial crew consists of $k$ males and $k$ females. The life support
 limits the total crew size to $2k$. We will make the following assumptions
 
 A1: Each individual is fully described by their sex
@@ -160,7 +160,7 @@ sub<-rbind(subset(dd,x==0),subset(dd,x==(2*k)))
 @
 
 \subsection*{Fundamental matrix and expected surviving time}
-In out model the transition matrix has two absorbing states. Then it can be put into the following canonical form:
+In our model, the transition matrix has two absorbing states and can be put into the following canonical form:
 \begin{align*}
 M = \begin{pmatrix}
 Q & R\\ 
@@ -174,7 +174,7 @@ The fundamental matrix, here denoted by $F$, can be calculated by:
 F=\sum_{t=0}^\infty Q^t=(I_{2k-1}-Q)^{-1}
 \end{align*}
 
-Where $I_{2k-1}$ is the identity matrix. the entry of the fundamental matrix $F$ is the expected number of times the Markov chain is in stat $j$, given that the chain started in state $i$.  In this case the expected number of steps before being absorbed when starting in transient state $I$ is the ith entry of the vector:
+Where $I_{2k-1}$ is the identity matrix. the entry of the fundamental matrix $F$ is the expected number of times the Markov chain is in state $j$, given that the chain started in state $i$.  In this case the expected number of steps before being absorbed when starting in transient state $I$ is the ith entry of the vector:
 \begin{align*}
 S=F1
 \end{align*}

@@ -56,7 +56,7 @@ For fertility we assume
 \end{equation}
 
 Where $f$ is a constant between 0 and 1. So the expected number of children
-produced by a woman will be $20 \times f$. Out default for all the simulations
+produced by a woman will be $20 \times f$. Our default for all the simulations
 (except the fertility simulation) use f=0.2.
 
 Our code is general enough to easily accommodate more sophisticated death
