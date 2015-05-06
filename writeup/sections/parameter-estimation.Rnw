@@ -18,7 +18,7 @@ s.pop <- ddply(pop, 'max.pop', summarise, mean=mean(log(survival.time)), sd=sd(l
 par(mfrow=c(3,3), mar=c(3,2,3,1))
 for(i in 2:10){
     dat <- log(subset(pop, max.pop == s.pop$max.pop[i]))$survival.time 
-    hist(dat, freq=FALSE, main=paste0('N=', s.pop[i, 1]), xlab='', ylab='')
+    hist(dat, freq=FALSE, main=paste0('N=', s.pop[i, 1], ', mean=', signif(s.pop[i, 2],2) , ', sd=', signif(s.pop[i, 3], 2)), xlab='', ylab='')
     # curve(dgamma(x, shape=s.pop[i, 'alpha'], rate=s.pop[i, 'beta']), min=min(dat), max=max(dat), add=TRUE, col="red")
     curve(dnorm(x, mean=s.pop[i, 'mean'], sd=s.pop[i, 'sd']), min=min(dat), max=max(dat), add=TRUE, col="blue")
 }
@@ -29,4 +29,35 @@ data with varying maximum population thesholds ($N$), $f=0.2$ and $A=80$.}
 
 \end{figure}
 
+Survival times do appear to be neatly log-normal distributed. The means and
+standard deviations of this log-normal distribution seem to increase linearly
+with maximum population size. So we can model the distribution of population
+surival time as
 
+\begin{align}
+    \log(T_i) &\sim Norm(\mu_i, \sigma_i) \\
+    \mu_i     &= \beta_0 + \beta_1 N_i \\
+    \sigma_i  &= \beta_2 + \beta_3 N_i
+\end{align}
+
+Where $T_i$ is the population survival time and $N_i$ is the population
+maximum. The $\beta$s can be estimated from the means and standard deviations
+of the simulated data.
+
+<<fit, echo=FALSE>>=
+fit.mean <- lm(s.pop$mean ~ s.pop$max.pop)
+fit.sd <- lm(s.pop$sd ~ s.pop$max.pop)
+beta0 <- coef(fit.mean)[1]
+beta1 <- coef(fit.mean)[2]
+beta2 <- coef(fit.sd)[1]
+beta3 <- coef(fit.sd)[2]
+summary(fit.mean)
+summary(fit.sd)
+@
+
+\begin{align*}
+    \hat{\beta_0} &= \Sexpr{signif(beta0, 3)} \\
+    \hat{\beta_1} &= \Sexpr{signif(beta1, 3)} \\
+    \hat{\beta_2} &= \Sexpr{signif(beta2, 3)} \\
+    \hat{\beta_3} &= \Sexpr{signif(beta3, 3)}
+\end{align*}
