@@ -1,0 +1,26 @@
+\section{Introduction}
+
+A paper by Dr. Harry Jones \footnote{Jones, Harry W. "Starship Life Support."
+(2009)} discussed the resources and costs of sending a manned spaceship to
+another star system. The author summarizes a mission plan for a 10 light-year
+journey at low relativistic speeds that would require a few hundred years.  His
+design is based on near-future technology and thus does not include technology
+such as suspended animation. So the mission would span several generations.
+
+The mass of the payload, and thus the cost of the mission, is dependent on the
+size of the crew. A very small population would have a high chance of dying off
+by chance (for example, if there are only two women, and they both happen to be
+infertile, the mission fails). A very high population is prohibitively
+expensive. The purpose of our project is to estimate how long a population of
+given maximum size will survive.
+
+We will first construct an extremely unrealistic (but mathematically simple)
+Markov model. Then we will run a more realistic simulation. From the simulated
+data we will predict the distribution of survival times for different crew
+sizes. Then we will develop a general equation to predict the distribution of
+survival times for an arbitrary maximum population size. We will also determine
+the effect of lifespan and fertility on population survival times.
+
+Using these results we can estimate how large a crew size is needed to have a
+high probability of surviving the journey and what population control
+strategies will increase the odds.

@@ -13,7 +13,7 @@
 \begin{document}
 
 \Sexpr{library(knitr)}
-\Sexpr{knit_child('sections/background.Rnw')}
+\Sexpr{knit_child('sections/introduction.Rnw')}
 \Sexpr{knit_child('sections/markov.Rnw')}
 \Sexpr{knit_child('sections/simulation.Rnw')}
 \Sexpr{knit_child('sections/results.Rnw')}
