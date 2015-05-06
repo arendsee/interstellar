@@ -112,20 +112,21 @@ out<-data.frame(max.pop=it,mean=it,sd=it)
 for(i in 1:length(it)){
   out$mean[i]=mean(log(subset(pop,max.pop==it[i])$survival.time))
   out$sd[i]=sd(log(subset(pop,max.pop==it[i])$survival.time))
-  out$q1[i]=quantile(log(subset(pop,max.pop==it[i])$survival.time),prob=5/100)
-  out$q2[i]=quantile(log(subset(pop,max.pop==it[i])$survival.time),prob=95/100)
+  out$q1[i]=quantile(log(subset(pop,max.pop==it[i])$survival.time),prob=2.5/100)
+  out$q2[i]=quantile(log(subset(pop,max.pop==it[i])$survival.time),prob=97.5/100)
 }
 out$beta=out$mean/(out$sd^2)
 out$alpha=(out$mean^2)/(out$sd^2)
 
+goforth<-out
 #out
 
 p1 <- ggplot(out,aes(x=max.pop,y=alpha))+geom_point()
 p2 <- ggplot(out,aes(x=max.pop,y=beta))+geom_point()
 
 o2<-data.frame(max.pop=out$max.pop,value=out$mean,type="mean")
-o2<-rbind(o2,data.frame(max.pop=out$max.pop,value=out$q1,type="5%"))
-o2<-rbind(o2,data.frame(max.pop=out$max.pop,value=out$q2,type="95%"))
+o2<-rbind(o2,data.frame(max.pop=out$max.pop,value=out$q1,type="2.5%"))
+o2<-rbind(o2,data.frame(max.pop=out$max.pop,value=out$q2,type="97.5%"))
 q1 <- ggplot(o2,aes(x=max.pop,y=value,colour=type))+geom_point()+geom_line()+ylab("Log(survival.time)")+xlab("Maximum Population")
 q2 <- ggplot(out,aes(x=max.pop,y=sd))+geom_point()+xlab("Maximum Population")
 
@@ -139,16 +140,16 @@ out<-data.frame(max.age=it,mean=it,sd=it,q1=it,q2=it)
 for(i in 1:length(it)){
   out$mean[i]=mean(log(subset(age,max.age==it[i])$survival.time))
   out$sd[i]=sd(log(subset(age,max.age==it[i])$survival.time))
-  out$q1[i]=quantile(log(subset(age,max.age==it[i])$survival.time),prob=5/100)
-  out$q2[i]=quantile(log(subset(age,max.age==it[i])$survival.time),prob=95/100)
+  out$q1[i]=quantile(log(subset(age,max.age==it[i])$survival.time),prob=2.5/100)
+  out$q2[i]=quantile(log(subset(age,max.age==it[i])$survival.time),prob=97.5/100)
 }
 out$beta=out$mean/(out$sd^2)
 out$alpha=(out$mean^2)/(out$sd^2)
 
 #out
 o2<-data.frame(max.age=out$max.age,value=out$mean,type="mean")
-o2<-rbind(o2,data.frame(max.age=out$max.age,value=out$q1,type="5%"))
-o2<-rbind(o2,data.frame(max.age=out$max.age,value=out$q2,type="95%"))
+o2<-rbind(o2,data.frame(max.age=out$max.age,value=out$q1,type="2.5%"))
+o2<-rbind(o2,data.frame(max.age=out$max.age,value=out$q2,type="97.5%"))
 q3 <- ggplot(o2,aes(x=max.age,y=value,colour=type))+geom_point()+geom_line()+ylab("Log(survival.time)")+xlab("Maximum Age")
 
 p3 <- ggplot(out,aes(x=max.age,y=alpha))+geom_point()
@@ -168,16 +169,16 @@ out<-data.frame(fertility=it,mean=it,sd=it)
 for(i in 1:length(it)){
   out$mean[i]=mean(log(subset(fer,fertility==it[i])$survival.time))
   out$sd[i]=sd(log(subset(fer,fertility==it[i])$survival.time))
-  out$q1[i]=quantile(log(subset(fer,fertility==it[i])$survival.time),prob=5/100)
-  out$q2[i]=quantile(log(subset(fer,fertility==it[i])$survival.time),prob=95/100)
+  out$q1[i]=quantile(log(subset(fer,fertility==it[i])$survival.time),prob=2.5/100)
+  out$q2[i]=quantile(log(subset(fer,fertility==it[i])$survival.time),prob=97.5/100)
 }
 out$beta=out$mean/(out$sd^2)
 out$alpha=(out$mean^2)/(out$sd^2)
 
 #out
 o2<-data.frame(fertility=out$fertility,value=out$mean,type="mean")
-o2<-rbind(o2,data.frame(fertility=out$fertility,value=out$q1,type="5%"))
-o2<-rbind(o2,data.frame(fertility=out$fertility,value=out$q2,type="95%"))
+o2<-rbind(o2,data.frame(fertility=out$fertility,value=out$q1,type="2.5%"))
+o2<-rbind(o2,data.frame(fertility=out$fertility,value=out$q2,type="97.5%"))
 q5 <- ggplot(o2,aes(x=fertility,y=value,colour=type))+geom_point()+geom_line()+ylab("Log(survival.time)")+xlab("Fertility(%)")
 
 p5 <- ggplot(out,aes(x=fertility,y=alpha))+geom_point()
