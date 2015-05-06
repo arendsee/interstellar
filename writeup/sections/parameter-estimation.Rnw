@@ -9,7 +9,7 @@
 % \frac{\mu^2}{\sigma^2}$ and $\frac{\beta = \mu}{\sigma^2}$. Of course we do not
 % know the true $\mu$ and $\sigma$.
  
-\begin{figure}
+\begin{figure}[!hbpt]
 <<echo=FALSE, fig.height=6, fig.width=6, message=FALSE, warning=FALSE>>=
 require(plyr)
 s.pop <- ddply(pop, 'max.pop', summarise, mean=mean(log(survival.time)), sd=sd(log(survival.time)))
@@ -44,16 +44,29 @@ Where $T_i$ is the population survival time and $N_i$ is the population
 maximum. The $\beta$s can be estimated from the means and standard deviations
 of the simulated data.
 
+Here we will predict $\beta$ values using 8 of the 10 simulations (removing
+$N=24$ and $N=40$) and then compare the predicted distribution to the empirical
+ones.
+
 <<fit, echo=FALSE>>=
-fit.mean <- lm(s.pop$mean ~ s.pop$max.pop)
-fit.sd <- lm(s.pop$sd ~ s.pop$max.pop)
+d <- s.pop[c(-6, -10), ]
+fit.mean <- lm(d$mean ~ d$max.pop)
+fit.sd <- lm(d$sd ~ d$max.pop)
 beta0 <- coef(fit.mean)[1]
 beta1 <- coef(fit.mean)[2]
 beta2 <- coef(fit.sd)[1]
 beta3 <- coef(fit.sd)[2]
-summary(fit.mean)
-summary(fit.sd)
+m24 <- subset(s.pop, max.pop == 24)$mean
+m40 <- subset(s.pop, max.pop == 40)$mean
+s24 <- subset(s.pop, max.pop == 24)$sd
+s40 <- subset(s.pop, max.pop == 40)$sd
+m24.star <- beta0 + beta1 * 24
+m40.star <- beta0 + beta1 * 40
+s24.star <- beta2 + beta3 * 24
+s40.star <- beta2 + beta3 * 40
 @
+
+This yields the following $\beta$ values
 
 \begin{align*}
     \hat{\beta_0} &= \Sexpr{signif(beta0, 3)} \\
@@ -61,3 +74,32 @@ summary(fit.sd)
     \hat{\beta_2} &= \Sexpr{signif(beta2, 3)} \\
     \hat{\beta_3} &= \Sexpr{signif(beta3, 3)}
 \end{align*}
+
+\begin{table}
+\begin{tabular}{l l l l l}
+    {} & predicted      & {}            & actual         & {} \\
+    {} & $\hat{\mu}$ & $\hat{\sigma}$ & $\hat{\mu}$ & $\hat{\sigma}$ \\
+    $N=24$ & \Sexpr{signif(m24.star, 3)} & \Sexpr{signif(s24.star, 3)} & \Sexpr{signif(m24, 3)} & \Sexpr{signif(s24, 3)} \\
+    $N=40$ & \Sexpr{signif(m40.star, 3)} & \Sexpr{signif(s40.star, 3)} & \Sexpr{signif(m40, 3)} & \Sexpr{signif(s40, 3)}
+\end{tabular}
+\caption{Predicted versus empirical estimates of the mean and standard deviation of two simulations}
+\end{table}
+
+\begin{figure}
+<<echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=3>>=
+par(mfrow=c(1,2), mar=c(3,2,3,1))
+
+dat <- log(subset(pop, max.pop == 24))$survival.time 
+hist(dat, freq=FALSE, main=paste0('N=24'), xlab='', ylab='')
+curve(dnorm(x, mean=m24, sd=s24), min=min(dat), max=max(dat), add=TRUE, col="blue")
+curve(dnorm(x, mean=m24.star, sd=s24.star), min=min(dat), max=max(dat), add=TRUE, col="red")
+
+dat <- log(subset(pop, max.pop == 40))$survival.time 
+hist(dat, freq=FALSE, main=paste0('N=40'), xlab='', ylab='')
+curve(dnorm(x, mean=m40, sd=s40), min=min(dat), max=max(dat), add=TRUE, col="blue")
+curve(dnorm(x, mean=m40.star, sd=s40.star), min=min(dat), max=max(dat), add=TRUE, col="red")
+@
+\caption{Predicted distribution (red) versus empirical distribution (blue)
+distributions.}
+\end{figure}
+
