@@ -60,26 +60,24 @@ fer<-read.table("../simulations/fertilitysim.tab",sep="\t",header=TRUE)
 <<cache=TRUE, echo=FALSE, message=FALSE>>=
 require(scales)
 
-p1 <- ggplot(pop,aes(x=as.factor(max.pop),y=survival.time)) +
+p1 <- ggplot(pop,aes(x=as.factor(max.pop),y=log2(survival.time))) +
   geom_violin(scale='area') +
   geom_boxplot(alpha=0.1, width=0.2, outlier.size=.1) +
   xlab('Maximum Population') +
-  ylab('Survival Time') +
-  scale_y_continuous(trans='log2', breaks=trans_breaks('log2', function(x) round(2^x)))
+  ylab('log2(Survival Time)')
 
-p2 <- ggplot(age,aes(x=as.factor(max.age),y=survival.time)) +
+p2 <- ggplot(age,aes(x=as.factor(max.age),y=log2(survival.time))) +
   geom_violin(scale='area') +
   geom_boxplot(alpha=0.1, width=0.2, outlier.size=.1) +
   xlab('Maximum Age') +
-  ylab('Survival Time') +
-  scale_y_continuous(trans='log2', breaks=trans_breaks('log2', function(x) round(2^x)))
+  ylab('log2(Survival Time)')
 
-p3 <- ggplot(fer,aes(x=as.factor(100 * fertility),y=survival.time)) +
+p3 <- ggplot(fer,aes(x=as.factor(100 * fertility),y=log2(survival.time))) +
   geom_violin(scale='area') +
   geom_boxplot(alpha=0.1, width=0.2, outlier.size=.1) +
   xlab('Fertility (%)') +
-  ylab('Survival Time') +
-  scale_y_continuous(trans='log2', breaks=trans_breaks('log2', function(x) round(2^x)))
+  ylab('log2(Survival Time)')
+
 multiplot(p1,p2,p3,cols=2)
 @
 
