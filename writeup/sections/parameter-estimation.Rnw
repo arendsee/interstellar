@@ -9,6 +9,7 @@
 % \frac{\mu^2}{\sigma^2}$ and $\frac{\beta = \mu}{\sigma^2}$. Of course we do not
 % know the true $\mu$ and $\sigma$.
  
+\begin{figure}
 <<echo=FALSE, fig.height=6, fig.width=6, message=FALSE, warning=FALSE>>=
 require(plyr)
 s.pop <- ddply(pop, 'max.pop', summarise, mean=mean(log(survival.time)), sd=sd(log(survival.time)))
@@ -22,5 +23,10 @@ for(i in 2:10){
     curve(dnorm(x, mean=s.pop[i, 'mean'], sd=s.pop[i, 'sd']), min=min(dat), max=max(dat), add=TRUE, col="blue")
 }
 @
+
+\caption{Normal curves with $\mu$ and $\sigma$ estimated from the simulated
+data with varying maximum population thesholds ($N$), $f=0.2$ and $A=80$.}
+
+\end{figure}
 
 
