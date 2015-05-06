@@ -1,32 +1,31 @@
-\section{The one-sex catastrophe}
-
-Suppose the initial crew consists of $k$ males and $k$ females. The lifesupport
-limits the total crew size to $2k$.
-
-\noindent
-Assuming
-
-A1: Each individual is fully described by their gender (simplification, ignore other factors)
-
-A2: Each individual has a probability $d$ of dying in a given year (death rate is independent of age)
-
-A3: Every death is followed by an immediate birth (given there is at least one male and one female)
-
-A4: Babies have probability $g$ of being female and $1 - g$ of being male
-
-Under these simple assumptions, the problem reduces to the random replacement
-of individuals (who die) with new individuals (who are born) of random sex. The population dies when all
-individuals are male or all individuals are female. How long, on average, will
-the population survive ($\mu_T$)? What is the distribution of survival times?
-How does $\mu_T$ vary with $2k$?
-
 \subsection{Markov model}
 
-One step consists of a death and birth pair. Basically, one random member of
-the population is replaced by a new individual of a random gender.
+Suppose the initial crew consists of $k$ males and $k$ females. The lifesupport
+limits the total crew size to $2k$. We will make the following assumptions
 
-In a given step, the number of females may increase, stay the same, or decrease
-($p_{+1}$, $p_0$, $p_{-1}$, respectively). These events will occur with the following probabilities:
+\noindent
+A1: Each individual is fully described by their sex
+
+A2: Each individual, regardless of age and sex, has a probability $d$ of dying
+in a given year
+
+A3: Every death is followed by an immediate birth (given there is at least one
+male and one female)
+
+A4: Babies have probability $\frac{1}{2}$ of being female and $\frac{1}{2}$ of
+being male
+
+Under these simple assumptions, the problem reduces to the random replacement
+of individuals (who die) with new individuals (who are born) of random sex. The
+population dies when all individuals are male or all individuals are female.
+
+One step in the Markov process consists of a death and birth pair. Basically,
+one random member of the population is replaced by a new individual of a random
+sex.
+
+In a given step, the number of females may increase, stay the same, or
+decrease. These events have the probabilities $p_{+1}$, $p_0$, $p_{-1}$,
+respectively, and are solved for below
 
 \begin{align*}
     p_{+1} &= \left( \frac{2k - n_f}{2k} \right) \frac{1}{2}  \tag{Male dies, female is born} \\
@@ -36,7 +35,6 @@ In a given step, the number of females may increase, stay the same, or decrease
     p_{-1} &= \left( \frac{n_f}{2k} \right) \frac{1}{2}  \tag{Female dies, male is born}
 \end{align*}
 
-%Where $X$ is the number of females and $g=(1/2)$ is the probability of a female child. 
 Where $n_f$ is the number of females and $g=(1/2)$ is the probability of a female child. 
 
 This yields the following transition matrix:
