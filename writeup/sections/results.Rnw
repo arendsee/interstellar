@@ -1,6 +1,10 @@
 \section{Results}
 
-Data from simulated populations with varying maximum population ($N$), maximum age ($A$), and fertility rate ($f$) were collected and compared with estimated values from the Markov Model. When not veried, the default values of maximum population, maximum age, and fertility rate were 20, 80, and 0.2 respectively.
+Data from simulated populations with varying maximum population ($N$), maximum
+age ($A$), and fertility rate ($f$) were collected and compared with estimated
+values from the Markov Model. Unless specified otherwise, the default values of
+maximum population, maximum age, and fertility rate were 20, 80, and 0.2
+respectively.
 
 <<r,echo=FALSE>>=
 # Multiple plot function
@@ -98,11 +102,24 @@ multiplot(p1,p2,p3,cols=2)
 \caption{Boxplots of log transformed survival time vs Max Population $N$, Max Age $A$, or Fertility $f$}
 \end{figure}
 
-The observed linear relationship between maximum population $2k$ and log transformed survival time is consistent with the view that a larger population is more robust to random changes in female/male composition. Recall that a female-sparce or female-saturated population results in population failure.
+The observed linear relationship between maximum population $2k$ and log
+transformed survival time is consistent with the view that a larger population
+is more robust to random changes in female/male composition. Recall that a
+female-sparce or female-saturated population results in population failure.
 
-However, increasing the fertility rate of the females in the population increased the robustness of the population up to a certain limit. Above a fertility rate of 0.2, the log transformed survival time still increases but at a slower rate. While more females were within the fertile range, the population size placed a limit on how often children were born.
+However, increasing the fertility rate of the females in the population
+increased the robustness of the population up to a certain limit. Above a
+fertility rate of 0.2, the log transformed survival time still increases but at
+a slower rate. While more females were within the fertile range, the population
+size placed a limit on how often children were born. A fertility rate of 1
+would imply every woman within the reproductive range will have one baby a year
+given the population is below the threshold. But this limit is only a few fold
+higher than our default value of 0.2.
 
-Inversely, increasing the max age of the population decreased the log transformed survival time. This effectively reduces the number of births and deaths since the maximum population can only be $2k$. Increasing the average age decreases the proportion of fertile females in the total population. 
+Inversely, increasing the max age of the population decreased the log
+transformed survival time. This effectively reduces the number of births and
+deaths since the maximum population can only be $2k$. Increasing the average
+age decreases the proportion of fertile females in the total population.
 
 %In order to better understand the distribution of log survival time, we plotted histograms under each of the results. For the most part, the distributions looked like gamma distributions. The gamma function has two parameters ($\alpha$, $\beta$).
 
@@ -215,4 +232,3 @@ qplot(log(survival.time),data=pop,binwidth=10/30)+facet_grid(max.pop~.)+curve(dn
 qplot(log(survival.time),data=age,binwidth=10/30)+facet_grid(max.age~.)
 qplot(log(survival.time),data=fer,binwidth=10/30)+facet_grid(fertility~.)
 @
-
