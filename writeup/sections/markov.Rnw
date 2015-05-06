@@ -130,7 +130,7 @@ years&=t/d && \text{converting number of births and deaths to number of years}\\
 \hat{\mu}_{T,2k}&=\sum (years)*[Pr(X==0)+Pr(X==2k)]
 \end{align*}
 
-\subsection*{Fundamental matrix and expected surviving year}
+\subsection*{Fundamental matrix and expected surviving time}
 In out model the transition matrix has two obsorbing states. Then it can be put into the following canonical form:
 \begin{align*}
 M = \begin{pmatrix}
@@ -163,9 +163,9 @@ Then we get the fundamental matrix:
 
 \includegraphics[width=\linewidth]{sections/fundamental.png}
 
-The expected step number is $1168$ and then we can calculate the expected surviving year is $9349$.
+The expected step number is $1168$ and then we can calculate the expected surviving time is $9349$ years.
 
-We calculated the expected survive year by using different $k$ values (2~15) :
+We calculated the expected survive time by using different $k$ values (2~15) :
 <<eval=FALSE>>=
 result=zeros(15,1);
 for k=2:15
