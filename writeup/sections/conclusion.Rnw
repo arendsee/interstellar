@@ -1,2 +1,3 @@
 \section{Conclusion}
+The expected surviving year calculated from fundamental matrix of the Markov model indicates a small number of population can survive for a long time. For example for a population of 10, the surviving year is over 9000. This theoretical result is ideal and not meaningful when comparing to the result from the simulation since the assumption is over simplifed.  
 
