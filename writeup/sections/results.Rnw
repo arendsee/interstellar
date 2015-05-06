@@ -57,6 +57,7 @@ age<-read.table("../simulations/agesim.tab",sep="\t",header=TRUE)
 fer<-read.table("../simulations/fertilitysim.tab",sep="\t",header=TRUE)
 @
 
+
 <<cache=TRUE, echo=FALSE, message=FALSE>>=
 require(scales)
 require(gridExtra)
@@ -100,7 +101,7 @@ Inversely, increasing the max age of the population decreased the log transforme
 
 In order to better understand the distribution of log survival time, we plotted histograms under each of the results. For the most part, the distributions looked like gamma distributions. The gamma function has two parameters ($\alpha$, $\beta$).
 
-<<>>=
+<<,echo=FALSE>>=
 it<-unique(pop$max.pop)
 out<-data.frame(max.pop=it,mean=it,sd=it)
 for(i in 1:length(it)){
@@ -112,14 +113,14 @@ for(i in 1:length(it)){
 out$beta=out$mean/(out$sd^2)
 out$alpha=(out$mean^2)/(out$sd^2)
 
-out
+#out
 
 p1 <- ggplot(out,aes(x=max.pop,y=alpha))+geom_point()
 p2 <- ggplot(out,aes(x=max.pop,y=beta))+geom_point()
 
 o2<-data.frame(max.pop=out$max.pop,value=out$mean,type="mean")
-o2<-rbind(o2,data.frame(max.pop=out$max.pop,value=out$q1,type="q1"))
-o2<-rbind(o2,data.frame(max.pop=out$max.pop,value=out$q2,type="q2"))
+o2<-rbind(o2,data.frame(max.pop=out$max.pop,value=out$q1,type="5%"))
+o2<-rbind(o2,data.frame(max.pop=out$max.pop,value=out$q2,type="95%"))
 q1 <- ggplot(o2,aes(x=max.pop,y=value,colour=type))+geom_point()
 q2 <- ggplot(out,aes(x=max.pop,y=sd))+geom_point()
 
@@ -139,7 +140,7 @@ for(i in 1:length(it)){
 out$beta=out$mean/(out$sd^2)
 out$alpha=(out$mean^2)/(out$sd^2)
 
-out
+#out
 
 p3 <- ggplot(out,aes(x=max.age,y=alpha))+geom_point()
 p4 <- ggplot(out,aes(x=max.age,y=beta))+geom_point()
@@ -164,7 +165,7 @@ for(i in 1:length(it)){
 out$beta=out$mean/(out$sd^2)
 out$alpha=(out$mean^2)/(out$sd^2)
 
-out
+#out
 
 p5 <- ggplot(out,aes(x=fertility,y=alpha))+geom_point()
 p6 <- ggplot(out,aes(x=fertility,y=beta))+geom_point()
@@ -175,7 +176,7 @@ q6 <- ggplot(out,aes(x=fertility,y=sd))+geom_point()
 r5 <- ggplot(out,aes(x=fertility,y=q1))+geom_point()
 r6 <- ggplot(out,aes(x=fertility,y=q2))+geom_point()
 
-multiplot(p1,p3,p5,p2,p4,p6,cols=2)
+#multiplot(p1,p3,p5,p2,p4,p6,cols=2)
 multiplot(q1,q3,q5,q2,q4,q6,cols=2)
 multiplot(r1,r3,r5,r2,r4,r6,cols=2)
 @
