@@ -1,4 +1,6 @@
 *.pdf
+writeup/cache/
+writeup/framed.sty
 shinyapps/
 *.aux
 *.fdb_latexmk
