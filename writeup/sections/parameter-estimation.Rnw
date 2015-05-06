@@ -18,7 +18,7 @@ s.pop <- ddply(pop, 'max.pop', summarise, mean=mean(log(survival.time)), sd=sd(l
 par(mfrow=c(3,3), mar=c(3,2,3,1))
 for(i in 2:10){
     dat <- log(subset(pop, max.pop == s.pop$max.pop[i]))$survival.time 
-    hist(dat, freq=FALSE, main=paste0('N=', s.pop[i, 1], ', mean=', signif(s.pop[i, 2],2) , ', sd=', signif(s.pop[i, 3], 2)), xlab='', ylab='')
+    hist(dat, freq=FALSE, main=paste0('N=', s.pop[i, 1], ', mean=', signif(s.pop[i, 2],2) , ', sd=', signif(s.pop[i, 3], 2)), xlab='', ylab='',ylim=c(0,0.7))
     # curve(dgamma(x, shape=s.pop[i, 'alpha'], rate=s.pop[i, 'beta']), min=min(dat), max=max(dat), add=TRUE, col="red")
     curve(dnorm(x, mean=s.pop[i, 'mean'], sd=s.pop[i, 'sd']), min=min(dat), max=max(dat), add=TRUE, col="blue")
 }
@@ -96,12 +96,12 @@ This yields the following $\beta$ values
 par(mfrow=c(1,2), mar=c(3,2,3,1))
 
 dat <- log(subset(pop, max.pop == 24))$survival.time 
-hist(dat, freq=FALSE, main=paste0('N=24'), xlab='', ylab='')
+hist(dat, freq=FALSE, main=paste0('N=24'), xlab='', ylab='',ylim=c(0,0.5))
 curve(dnorm(x, mean=m24, sd=s24), min=min(dat), max=max(dat), add=TRUE, col="blue")
 curve(dnorm(x, mean=m24.star, sd=s24.star), min=min(dat), max=max(dat), add=TRUE, col="red")
 
 dat <- log(subset(pop, max.pop == 40))$survival.time 
-hist(dat, freq=FALSE, main=paste0('N=40'), xlab='', ylab='')
+hist(dat, freq=FALSE, main=paste0('N=40'), xlab='', ylab='',ylim=c(0,0.5))
 curve(dnorm(x, mean=m40, sd=s40), min=min(dat), max=max(dat), add=TRUE, col="blue")
 curve(dnorm(x, mean=m40.star, sd=s40.star), min=min(dat), max=max(dat), add=TRUE, col="red")
 @
