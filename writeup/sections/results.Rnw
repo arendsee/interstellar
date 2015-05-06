@@ -1,6 +1,6 @@
 \section{Results}
 
-Data from simulated populations with varying maximum population ($max.pop$), maximum age ($max.age$), and fertility rate ($fertility$) were collected and compared with estimated values from the Markov Model. When not veried, the default values of maximum population, maximum age, and fertility rate were 20, 80, and 0.2 respectively.
+Data from simulated populations with varying maximum population ($N$), maximum age ($A$), and fertility rate ($f$) were collected and compared with estimated values from the Markov Model. When not veried, the default values of maximum population, maximum age, and fertility rate were 20, 80, and 0.2 respectively.
 
 <<r,echo=FALSE>>=
 # Multiple plot function
@@ -86,12 +86,17 @@ p4 <- tableGrob(pop[1:3,1:3],
                           "Min Rep"),
                  show.rownames =FALSE,
                  theme=theme.white())
-#multiplot(p1,p2,p3,p4,cols=2)
-grid.arrange(p3,p4,p1,p2,
-             ncol=2,
-             as.table=TRUE,
-             heights=c(1,1))
 @
+\begin{figure}[H]
+<<,echo=FALSE>>=
+multiplot(p1,p2,p3,cols=2)
+#grid.arrange(p3,p1,p2,
+#             ncol=2,
+#             as.table=TRUE,
+#             heights=c(1,1))
+@
+\caption{Boxplots of log transformed survival time vs Max Population $N$, Max Age $A$, or Fertility $f$}
+\end{figure}
 
 The observed linear relationship between maximum population $2k$ and log transformed survival time is consistent with the view that a larger population is more robust to random changes in female/male composition. Recall that a female-sparce or female-saturated population results in population failure.
 
@@ -121,8 +126,8 @@ p2 <- ggplot(out,aes(x=max.pop,y=beta))+geom_point()
 o2<-data.frame(max.pop=out$max.pop,value=out$mean,type="mean")
 o2<-rbind(o2,data.frame(max.pop=out$max.pop,value=out$q1,type="5%"))
 o2<-rbind(o2,data.frame(max.pop=out$max.pop,value=out$q2,type="95%"))
-q1 <- ggplot(o2,aes(x=max.pop,y=value,colour=type))+geom_point()+geom_line()+ylab("Log(survival.time)")
-q2 <- ggplot(out,aes(x=max.pop,y=sd))+geom_point()
+q1 <- ggplot(o2,aes(x=max.pop,y=value,colour=type))+geom_point()+geom_line()+ylab("Log(survival.time)")+xlab("Maximum Population")
+q2 <- ggplot(out,aes(x=max.pop,y=sd))+geom_point()+xlab("Maximum Population")
 
 r1 <- ggplot(out,aes(x=max.pop,y=q1))+geom_point()
 r2 <- ggplot(out,aes(x=max.pop,y=q2))+geom_point()
@@ -144,13 +149,13 @@ out$alpha=(out$mean^2)/(out$sd^2)
 o2<-data.frame(max.age=out$max.age,value=out$mean,type="mean")
 o2<-rbind(o2,data.frame(max.age=out$max.age,value=out$q1,type="5%"))
 o2<-rbind(o2,data.frame(max.age=out$max.age,value=out$q2,type="95%"))
-q3 <- ggplot(o2,aes(x=max.age,y=value,colour=type))+geom_point()+geom_line()+ylab("Log(survival.time)")
+q3 <- ggplot(o2,aes(x=max.age,y=value,colour=type))+geom_point()+geom_line()+ylab("Log(survival.time)")+xlab("Maximum Age")
 
 p3 <- ggplot(out,aes(x=max.age,y=alpha))+geom_point()
 p4 <- ggplot(out,aes(x=max.age,y=beta))+geom_point()
 
 #q3 <- ggplot(out,aes(x=max.age,y=mean))+geom_point()
-q4 <- ggplot(out,aes(x=max.age,y=sd))+geom_point()
+q4 <- ggplot(out,aes(x=max.age,y=sd))+geom_point()+xlab("Maximum Age")
 
 r3 <- ggplot(out,aes(x=max.age,y=q1))+geom_point()
 r4 <- ggplot(out,aes(x=max.age,y=q2))+geom_point()
@@ -173,21 +178,28 @@ out$alpha=(out$mean^2)/(out$sd^2)
 o2<-data.frame(fertility=out$fertility,value=out$mean,type="mean")
 o2<-rbind(o2,data.frame(fertility=out$fertility,value=out$q1,type="5%"))
 o2<-rbind(o2,data.frame(fertility=out$fertility,value=out$q2,type="95%"))
-q5 <- ggplot(o2,aes(x=fertility,y=value,colour=type))+geom_point()+geom_line()+ylab("Log(survival.time)")
+q5 <- ggplot(o2,aes(x=fertility,y=value,colour=type))+geom_point()+geom_line()+ylab("Log(survival.time)")+xlab("Fertility(%)")
 
 p5 <- ggplot(out,aes(x=fertility,y=alpha))+geom_point()
 p6 <- ggplot(out,aes(x=fertility,y=beta))+geom_point()
 
 #q5 <- ggplot(out,aes(x=fertility,y=mean))+geom_point()
-q6 <- ggplot(out,aes(x=fertility,y=sd))+geom_point()
+q6 <- ggplot(out,aes(x=fertility,y=sd))+geom_point()+xlab("Fertility(%)")
 
 r5 <- ggplot(out,aes(x=fertility,y=q1))+geom_point()
 r6 <- ggplot(out,aes(x=fertility,y=q2))+geom_point()
 
 #multiplot(p1,p3,p5,p2,p4,p6,cols=2)
+@
+
+\begin{figure}[H]
+<<,echo=FALSE>>=
 multiplot(q1,q3,q5,q2,q4,q6,cols=2)
 #multiplot(r1,r3,r5,r2,r4,r6,cols=2)
 @
+
+\caption{Plots of mean and standard deviations across all treatments}
+\end{figure}
 
 % scrap after this
 <<echo=FALSE,eval=FALSE>>=

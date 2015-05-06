@@ -84,7 +84,8 @@ This yields the following transition matrix:
 \end{equation}
 
 A population evolving according to this matrix is certain to eventually fall
-into one of the two absorbing states, when $n_f=0$ or $n_f=2k$.
+into one of the two absorbing states, when $n_f=0$ or $n_f=2k$. An example transition matrix for k=5 is shown below.
+
 
 <<markov,fig.height=3.5, echo=FALSE, message=FALSE>>=
 library(markovchain)
@@ -119,16 +120,25 @@ for(i in 0:9){
    dd<-rbind(dd,data.frame(y=c(out),x=c(0:(2*k)),t=toString(t)))
  }
 }
-sub<-rbind(subset(dd,x==0),subset(dd,x==(2*k))); (muhat_t=sum(sub$y*c(sub$t)*(80/(2*k))))
+@
+\begin{figure}[H]
+<<fig.height=3.5, echo=FALSE, message=FALSE>>=
 qplot(x,y,data=dd,colour=t,xlab="Number of females (X)",
       ylab="Pr(X==x) after t deaths and births")+geom_line()
 @
+\caption{Percentage of populations with $x$ number of Females at death/birth step $t$.}
+\end{figure}
 
 \begin{align*}
 d&=\frac{2k}{80} \text{ deaths per year} && \text{Assuming uniform distribution of people from 0 to 80 years of age}\\
 years&=t/d && \text{converting number of births and deaths to number of years}\\
 \hat{\mu}_{T,2k}&=\sum (years)*[Pr(X==0)+Pr(X==2k)]
 \end{align*}
+
+<<,echo=FALSE>>=
+sub<-rbind(subset(dd,x==0),subset(dd,x==(2*k))) 
+(muhat_t=sum(sub$y*c(sub$t)*(80/(2*k))))
+@
 
 \subsection*{Fundamental matrix and expected surviving time}
 In out model the transition matrix has two absorbing states. Then it can be put into the following canonical form:
@@ -146,16 +156,16 @@ F=\sum_{t=0}^\infty Q^t=(I_{2k-1}-Q)^{-1}
 \end{align*}
 
 
-where $I_{2k-1}$ is the identity matrix. the entry of the fundamental matrix $F$ is the expected number of times the Markov chain is in stat $j$, given that the chain started in state $i$.  In this case the expected number of steps before being absorbed when starting in transient state I is the ith entry of the vector:
+where $I_{2k-1}$ is the identity matrix. the entry of the fundamental matrix $F$ is the expected number of times the Markov chain is in stat $j$, given that the chain started in state $i$.  In this case the expected number of steps before being absorbed when starting in transient state $I$ is the ith entry of the vector:
 \begin{align*}
 S=F1
 \end{align*}
-where $1$ is a length 2k-1 column vector whose entries are all one.
+where $1$ is a length $2k-1$ column vector whose entries are all one.
 For example when $k=5$ in our model, we have the transition matrix:
 
 \includegraphics[width=\linewidth]{sections/transition.png}
 
-The matrix Q is:
+The matrix $Q$ is:
 
 \includegraphics[width=\linewidth]{sections/Q.png}
 
@@ -185,8 +195,11 @@ end
 dlmwrite('expected.csv',result, 'delimiter',',', 'precision','%f');
 @
 
+\begin{figure}[H]
 <<fig.height=4,echo=FALSE>>=
 data<-read.table("expected.tab",header=TRUE,sep=" ")
 qplot(females,log2(expectedyear),data=data)
 @
+\caption{log transformed expected survival time versus number of females in the starting population}
+\end{figure}
 
