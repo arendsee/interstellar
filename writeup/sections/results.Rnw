@@ -59,6 +59,7 @@ fer<-read.table("../simulations/fertilitysim.tab",sep="\t",header=TRUE)
 
 <<cache=TRUE, echo=FALSE, message=FALSE>>=
 require(scales)
+require(gridExtra)
 
 p1 <- ggplot(pop,aes(x=as.factor(max.pop),y=log2(survival.time))) +
   geom_violin(scale='area') +
@@ -105,6 +106,8 @@ out<-data.frame(max.pop=it,mean=it,sd=it)
 for(i in 1:length(it)){
   out$mean[i]=mean(log(subset(pop,max.pop==it[i])$survival.time))
   out$sd[i]=sd(log(subset(pop,max.pop==it[i])$survival.time))
+  out$q1[i]=quantile(log(subset(pop,max.pop==it[i])$survival.time),prob=5/100)
+  out$q2[i]=quantile(log(subset(pop,max.pop==it[i])$survival.time),prob=95/100)
 }
 out$beta=out$mean/(out$sd^2)
 out$alpha=(out$mean^2)/(out$sd^2)
@@ -113,14 +116,25 @@ out
 
 p1 <- ggplot(out,aes(x=max.pop,y=alpha))+geom_point()
 p2 <- ggplot(out,aes(x=max.pop,y=beta))+geom_point()
+
+o2<-data.frame(max.pop=out$max.pop,value=out$mean,type="mean")
+o2<-rbind(o2,data.frame(max.pop=out$max.pop,value=out$q1,type="q1"))
+o2<-rbind(o2,data.frame(max.pop=out$max.pop,value=out$q2,type="q2"))
+q1 <- ggplot(o2,aes(x=max.pop,y=value,colour=type))+geom_point()
+q2 <- ggplot(out,aes(x=max.pop,y=sd))+geom_point()
+
+r1 <- ggplot(out,aes(x=max.pop,y=q1))+geom_point()
+r2 <- ggplot(out,aes(x=max.pop,y=q2))+geom_point()
 #multiplot(p1,p2,cols=1)
 
 # age
 it<-unique(age$max.age)
-out<-data.frame(max.age=it,mean=it,sd=it)
+out<-data.frame(max.age=it,mean=it,sd=it,q1=it,q2=it)
 for(i in 1:length(it)){
   out$mean[i]=mean(log(subset(age,max.age==it[i])$survival.time))
   out$sd[i]=sd(log(subset(age,max.age==it[i])$survival.time))
+  out$q1[i]=quantile(log(subset(age,max.age==it[i])$survival.time),prob=5/100)
+  out$q2[i]=quantile(log(subset(age,max.age==it[i])$survival.time),prob=95/100)
 }
 out$beta=out$mean/(out$sd^2)
 out$alpha=(out$mean^2)/(out$sd^2)
@@ -129,6 +143,13 @@ out
 
 p3 <- ggplot(out,aes(x=max.age,y=alpha))+geom_point()
 p4 <- ggplot(out,aes(x=max.age,y=beta))+geom_point()
+
+q3 <- ggplot(out,aes(x=max.age,y=mean))+geom_point()
+q4 <- ggplot(out,aes(x=max.age,y=sd))+geom_point()
+
+r3 <- ggplot(out,aes(x=max.age,y=q1))+geom_point()
+r4 <- ggplot(out,aes(x=max.age,y=q2))+geom_point()
+
 #multiplot(p1,p2,cols=1)
 
 # fertility
@@ -137,6 +158,8 @@ out<-data.frame(fertility=it,mean=it,sd=it)
 for(i in 1:length(it)){
   out$mean[i]=mean(log(subset(fer,fertility==it[i])$survival.time))
   out$sd[i]=sd(log(subset(fer,fertility==it[i])$survival.time))
+  out$q1[i]=quantile(log(subset(fer,fertility==it[i])$survival.time),prob=5/100)
+  out$q2[i]=quantile(log(subset(fer,fertility==it[i])$survival.time),prob=95/100)
 }
 out$beta=out$mean/(out$sd^2)
 out$alpha=(out$mean^2)/(out$sd^2)
@@ -145,7 +168,16 @@ out
 
 p5 <- ggplot(out,aes(x=fertility,y=alpha))+geom_point()
 p6 <- ggplot(out,aes(x=fertility,y=beta))+geom_point()
+
+q5 <- ggplot(out,aes(x=fertility,y=mean))+geom_point()
+q6 <- ggplot(out,aes(x=fertility,y=sd))+geom_point()
+
+r5 <- ggplot(out,aes(x=fertility,y=q1))+geom_point()
+r6 <- ggplot(out,aes(x=fertility,y=q2))+geom_point()
+
 multiplot(p1,p3,p5,p2,p4,p6,cols=2)
+multiplot(q1,q3,q5,q2,q4,q6,cols=2)
+multiplot(r1,r3,r5,r2,r4,r6,cols=2)
 @
 
 % scrap after this
