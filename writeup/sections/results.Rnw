@@ -99,7 +99,7 @@ However, increasing the fertility rate of the females in the population increase
 
 Inversely, increasing the max age of the population decreased the log transformed survival time. This effectively reduces the number of births and deaths since the maximum population can only be $2k$. Increasing the average age decreases the proportion of fertile females in the total population. 
 
-In order to better understand the distribution of log survival time, we plotted histograms under each of the results. For the most part, the distributions looked like gamma distributions. The gamma function has two parameters ($\alpha$, $\beta$).
+%In order to better understand the distribution of log survival time, we plotted histograms under each of the results. For the most part, the distributions looked like gamma distributions. The gamma function has two parameters ($\alpha$, $\beta$).
 
 <<,echo=FALSE>>=
 it<-unique(pop$max.pop)
@@ -121,7 +121,7 @@ p2 <- ggplot(out,aes(x=max.pop,y=beta))+geom_point()
 o2<-data.frame(max.pop=out$max.pop,value=out$mean,type="mean")
 o2<-rbind(o2,data.frame(max.pop=out$max.pop,value=out$q1,type="5%"))
 o2<-rbind(o2,data.frame(max.pop=out$max.pop,value=out$q2,type="95%"))
-q1 <- ggplot(o2,aes(x=max.pop,y=value,colour=type))+geom_point()
+q1 <- ggplot(o2,aes(x=max.pop,y=value,colour=type))+geom_point()+geom_line()+ylab("Log(survival.time)")
 q2 <- ggplot(out,aes(x=max.pop,y=sd))+geom_point()
 
 r1 <- ggplot(out,aes(x=max.pop,y=q1))+geom_point()
@@ -141,11 +141,15 @@ out$beta=out$mean/(out$sd^2)
 out$alpha=(out$mean^2)/(out$sd^2)
 
 #out
+o2<-data.frame(max.age=out$max.age,value=out$mean,type="mean")
+o2<-rbind(o2,data.frame(max.age=out$max.age,value=out$q1,type="5%"))
+o2<-rbind(o2,data.frame(max.age=out$max.age,value=out$q2,type="95%"))
+q3 <- ggplot(o2,aes(x=max.age,y=value,colour=type))+geom_point()+geom_line()+ylab("Log(survival.time)")
 
 p3 <- ggplot(out,aes(x=max.age,y=alpha))+geom_point()
 p4 <- ggplot(out,aes(x=max.age,y=beta))+geom_point()
 
-q3 <- ggplot(out,aes(x=max.age,y=mean))+geom_point()
+#q3 <- ggplot(out,aes(x=max.age,y=mean))+geom_point()
 q4 <- ggplot(out,aes(x=max.age,y=sd))+geom_point()
 
 r3 <- ggplot(out,aes(x=max.age,y=q1))+geom_point()
@@ -166,11 +170,15 @@ out$beta=out$mean/(out$sd^2)
 out$alpha=(out$mean^2)/(out$sd^2)
 
 #out
+o2<-data.frame(fertility=out$fertility,value=out$mean,type="mean")
+o2<-rbind(o2,data.frame(fertility=out$fertility,value=out$q1,type="5%"))
+o2<-rbind(o2,data.frame(fertility=out$fertility,value=out$q2,type="95%"))
+q5 <- ggplot(o2,aes(x=fertility,y=value,colour=type))+geom_point()+geom_line()+ylab("Log(survival.time)")
 
 p5 <- ggplot(out,aes(x=fertility,y=alpha))+geom_point()
 p6 <- ggplot(out,aes(x=fertility,y=beta))+geom_point()
 
-q5 <- ggplot(out,aes(x=fertility,y=mean))+geom_point()
+#q5 <- ggplot(out,aes(x=fertility,y=mean))+geom_point()
 q6 <- ggplot(out,aes(x=fertility,y=sd))+geom_point()
 
 r5 <- ggplot(out,aes(x=fertility,y=q1))+geom_point()
@@ -178,7 +186,7 @@ r6 <- ggplot(out,aes(x=fertility,y=q2))+geom_point()
 
 #multiplot(p1,p3,p5,p2,p4,p6,cols=2)
 multiplot(q1,q3,q5,q2,q4,q6,cols=2)
-multiplot(r1,r3,r5,r2,r4,r6,cols=2)
+#multiplot(r1,r3,r5,r2,r4,r6,cols=2)
 @
 
 % scrap after this
