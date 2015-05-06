@@ -129,3 +129,5 @@ d&=\frac{2k}{80} \text{ deaths per year} && \text{Assuming uniform distribution 
 years&=t/d && \text{converting number of births and deaths to number of years}\\
 \hat{\mu}_{T,2k}&=\sum (years)*[Pr(X==0)+Pr(X==2k)]
 \end{align*}
+
+hello
