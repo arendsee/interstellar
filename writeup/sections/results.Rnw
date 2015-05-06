@@ -199,7 +199,7 @@ multiplot(q1,q3,q5,q2,q4,q6,cols=2)
 #multiplot(r1,r3,r5,r2,r4,r6,cols=2)
 @
 
-\caption{Plots of mean and standard deviations across all treatments}
+\caption{Plots of mean and standard deviations across all treatments. Lines around the mean encompass 95\% of the simulated values.}
 \end{figure}
 
 % scrap after this

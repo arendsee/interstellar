@@ -31,8 +31,7 @@ data with varying maximum population thesholds ($N$), $f=0.2$ and $A=80$.}
 
 Survival times do appear to be neatly log-normal distributed. The means and
 standard deviations of this log-normal distribution seem to increase linearly
-with maximum population size. So we can model the distribution of population
-surival time as
+with maximum population size. So we can model the distribution of the log transformed population surival time using a linear model of the maximum poplation size.
 
 \begin{align}
     \log(T_i) &\sim Norm(\mu_i, \sigma_i) \\
@@ -84,7 +83,7 @@ This yields the following $\beta$ values
 \begin{table}
 \begin{tabular}{l l l l l}
     {} & predicted      & {}            & actual         & {} \\
-    {} & $\hat{\mu}$ & $\hat{\sigma}$ & $\hat{\mu}$ & $\hat{\sigma}$ \\
+    {} & $\hat{\hat{\mu}}$ & $\hat{\hat{\sigma}}$ & $\hat{\mu}$ & $\hat{\sigma}$ \\
     $N=24$ & \Sexpr{signif(m24.star, 3)} & \Sexpr{signif(s24.star, 3)} & \Sexpr{signif(m24, 3)} & \Sexpr{signif(s24, 3)} \\
     $N=40$ & \Sexpr{signif(m40.star, 3)} & \Sexpr{signif(s40.star, 3)} & \Sexpr{signif(m40, 3)} & \Sexpr{signif(s40, 3)}
 \end{tabular}
