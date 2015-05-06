@@ -2,15 +2,19 @@
 
 While the Markov model above yields interesting results, its assumptions are
 damningly simplistic. Relaxing these assumptions in a Markov chain context is
-possible (see Appendix), but is complicated. Here we will simulate small
-populations under varying conditions.
+possible (see Appendix), but is complicated (and irrelevant to the class). Here
+we will simulate small populations under varying conditions.
 
 Each iteration of a simulation represents one year of the interstellar journey.
 During this year each person dies with an age-dependent probability.
 Additionally, each surviving woman gives birth with an age-dependent
 probability. Each child has a 50\% chance of being male and a 50\% chance of
 being female. If the number of children born exceeds the maximum allowable
-population size, the excess babies are tossed out the airlock. 
+population size, the excess babies are jettisoned.
+
+It is assumed that women don't need men to make babies (they have a sperm
+bank). This assumption avoids the complexities of mate choice and provides
+sufficient genetic diversity to reduce serious mutational meltdown.
 
 \subsection{Parameters}
 The simulation takes the following parameters: 
@@ -20,8 +24,7 @@ The simulation takes the following parameters:
     \item Maximum possible age, $A$
     \item Death probability given age, $\boldsymbol{D} = \{D_i\}_{i=1}^A$
     \item Birth probability given age, $\boldsymbol{F} = \{F_i\}_{i=1}^A$
-    \item Women don't need men to make babies (they have a sperm bank). This
-    assumption avoids the complexities of mate choice and inbreeding.
+    
 \end{enumerate}
 
 The probability of dying at a given age we assume to be
@@ -36,7 +39,10 @@ The probability of dying at a given age we assume to be
 
 So everyone dies when they reach the age $A$. This does not accurately reflect
 real population dynamics, where death rate tends to increase linearly with
-time.
+time. But, as we shall see, the decrease in elderly proportions that would
+result from introducing age dependent rates would only serve to increase the
+survival time of the population. So the assumption that everyone dies at a ripe
+old age will lead to conservative estimates of required crew size.
 
 For fertility we assume
 
@@ -50,7 +56,8 @@ For fertility we assume
 \end{equation}
 
 Where $f$ is a constant between 0 and 1. So the expected number of children
-produced by a woman will be $20 \times f$.
+produced by a woman will be $20 \times f$. Out default for all the simulations
+(except the fertility simulation) use f=0.2.
 
 Our code is general enough to easily accommodate more sophisticated death
 and fertility vectors, but we think that would only complicate interpretation
@@ -65,7 +72,7 @@ distributed between 1 and $A$ and total number equal to $N$.
 
 The variable of interest is the population survival time, $T = \{i\}_{i=1}^{\infty}$.
 
-Of interest is the distribution of $T$ as a function of $f$ (fertility), $A$
-(maximum age), and $N$ (maximum population size).
+Of interest is the distribution of $T$ as a function of $N$ (maximum population
+size).
 
 The simulation ends when everyone is dead.
